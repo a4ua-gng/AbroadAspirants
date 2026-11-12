@@ -58,7 +58,9 @@ export async function POST(request) {
   }
   const ip = request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() || 'local';
   if (limited(ip)) return json('Too many questions at once. Wait a minute and try again.',429);
-  if (!process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN) {
+  // Hosted functions receive the short-lived token in request context.
+  if (!process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN
+    && !request.headers.get('x-vercel-oidc-token')) {
     return json('The AI advisor is unavailable. The Quick guide is available for application basics.',503);
   }
 
