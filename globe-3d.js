@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { cities, launchPoint } from './lib/destinations.js';
-import { landMask } from './globe-data.js';
+import { launchPoint } from './lib/destinations.js';
+import { createGlobeMarkers, landSampler } from './globe-support.js';
 
 const RADIUS = 1.46;
 const RAD = Math.PI / 180;
@@ -17,7 +17,7 @@ function texture() {
   map.width = 1440;
   map.height = 720;
   const ctx = map.getContext('2d');
-  const data = atob(landMask);
+  const isLand = landSampler();
   const ocean = ctx.createLinearGradient(0, 0, map.width, map.height);
   ocean.addColorStop(0, '#181b59');
   ocean.addColorStop(.39, '#214ba0');
@@ -25,7 +25,6 @@ function texture() {
   ocean.addColorStop(1, '#12476d');
   ctx.fillStyle = ocean;
   ctx.fillRect(0, 0, map.width, map.height);
-  const isLand = (x, y) => y >= 0 && y < 180 && Boolean(data.charCodeAt(y * 45 + (x >> 3)) & (128 >> (x & 7)));
   for (let y = 0; y < 180; y++) {
     for (let x = 0; x < 360; x++) {
       if (!isLand(x, y)) continue;
@@ -116,8 +115,8 @@ function routeCurve(from, to) {
   return new THREE.CatmullRomCurve3(points);
 }
 
-export function createGlobe(container, onSelect, motionEnabled) {
-  const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true, powerPreference:'high-performance'});
+export function createGlobe(container, onSelect, motionEnabled, canvas, context) {
+  const renderer = new THREE.WebGLRenderer({canvas, context, alpha:true, antialias:true, powerPreference:'high-performance'});
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
   renderer.setClearColor(0x080a1d, 0);
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -168,19 +167,9 @@ export function createGlobe(container, onSelect, motionEnabled) {
   scene.add(plane);
   const projection = new THREE.Vector3();
   const normal = new THREE.Vector3();
-  const markers = cities.map(city => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'globe-marker';
-    button.tabIndex = -1;
-    button.setAttribute('aria-label', 'Fly to ' + city.name);
-    button.style.setProperty('--pin', city.color);
-    button.innerHTML = '<span></span><b></b>';
-    button.lastElementChild.textContent = city.code;
-    button.addEventListener('click', () => onSelect(city.id));
-    container.append(button);
-    return {button, point: direction(city.lat, city.lon), city};
-  });
+  const markers = createGlobeMarkers(container, onSelect).map(marker => ({
+    ...marker, point:direction(marker.city.lat, marker.city.lon),
+  }));
   const from = direction(launchPoint.lat, launchPoint.lon);
   const origin = new THREE.Mesh(new THREE.SphereGeometry(.028, 12, 8), new THREE.MeshBasicMaterial({color:'#86fff0'}));
   origin.position.copy(from).multiplyScalar(RADIUS + .018);
@@ -273,7 +262,7 @@ export function createGlobe(container, onSelect, motionEnabled) {
   });
   renderer.domElement.addEventListener('pointermove', event => {
     if (!drag) return;
-    targetLon += (event.clientX - drag.x) * .36;
+    targetLon -= (event.clientX - drag.x) * .36;
     targetLat = clamp(targetLat + (event.clientY - drag.y) * .35, -70, 70);
     drag = {x:event.clientX, y:event.clientY};
     if (!animation) refresh();

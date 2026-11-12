@@ -41,7 +41,7 @@
 .globe-scene.dragging { cursor: grabbing; }
 .globe-scene canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
 .earth-placeholder { position: absolute; top: 50%; left: 50%; width: min(68%, 410px); aspect-ratio: 1; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle at 33% 29%,#b17add,#424e9e 39%,#153c68 65%,#0e162e 83%); border: 1px solid #b1bafb80; box-shadow: 0 0 70px #5e60be88; pointer-events: none; }
-.globe-scene.has-webgl .earth-placeholder { display: none; }
+.globe-scene.has-globe .earth-placeholder { display: none; }
 .globe-marker { position: absolute; z-index: 1; translate: -50% -50%; display: grid; place-items: center; width: 38px; height: 38px; border: none; background: transparent; padding: 0; }
 .globe-marker span { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fdf8ff; background: var(--pin); box-shadow: 0 0 15px var(--pin), 0 0 0 4px #fbf7ff35; transition: scale .2s; }
 .globe-marker:hover span, .globe-marker.active span { scale: 1.27; }

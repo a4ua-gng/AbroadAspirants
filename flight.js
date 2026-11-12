@@ -8,6 +8,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
   const film = $('#arrival-video');
   const photo = $('#city-landmark');
   const replay = $('#replay');
+  const replayLabel = replay.querySelector('.replay-label');
   const list = $('#city-buttons');
   const pathCity = () => cityById(location.pathname.match(/^\/city\/([^/]+)\/?$/)?.[1]);
   let globe;
@@ -63,7 +64,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     opportunities.replaceChildren(...city.opportunities.map(opportunity => {
       const card = document.createElement('article');
       card.className = 'city-opportunity';
-      card.innerHTML = '<p class="eyebrow"></p><h3></h3><p></p><a target="_blank" rel="noopener noreferrer">Official information ↗</a>';
+      card.innerHTML = '<p class="eyebrow"></p><h3></h3><p></p><a target="_blank" rel="noopener noreferrer">Official information <span class="symbol symbol-arrow" aria-hidden="true"></span></a>';
       card.children[0].textContent = `${opportunity.level} · ${opportunity.type}`;
       card.children[1].textContent = opportunity.title;
       card.children[2].textContent = opportunity.detail;
@@ -89,7 +90,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
       film.load();
       filmLoaded = false;
       arrival.classList.remove('video-ready', 'is-playing');
-      replay.textContent = '▶ Play 3D approach';
+      replayLabel.textContent = 'Play 3D approach';
       replay.disabled = false;
       film.poster = '/assets/cities/' + city.id + '-render.webp';
       populate(city);
@@ -144,7 +145,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     playing = false;
     film.pause();
     arrival.classList.remove('is-playing');
-    replay.textContent = '▶ Play 3D approach';
+    replayLabel.textContent = 'Play 3D approach';
     update();
   }
 
@@ -157,7 +158,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     playing = true;
     film.currentTime = 0;
     arrival.classList.add('is-playing');
-    replay.textContent = 'Ⅱ Pause 3D approach';
+    replayLabel.textContent = 'Pause 3D approach';
     try {
       await film.play();
     } catch {
@@ -173,7 +174,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
   film.addEventListener('error', () => {
     arrival.classList.remove('video-ready');
     stopReplay();
-    replay.textContent = '3D approach unavailable';
+    replayLabel.textContent = '3D approach unavailable';
     replay.disabled = true;
   });
 
@@ -194,13 +195,33 @@ export function setupFlight({ motionEnabled, onCityChange }) {
 
   const sharedCity = pathCity();
   setCity(sharedCity ?? cities[0], false);
-  import('./globe-3d.js').then(({ createGlobe }) => {
-    globe = createGlobe(scene, pick, motionEnabled);
-    scene.classList.add('has-webgl');
+  async function initializeGlobe() {
+    try {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('webgl2', {alpha:true, antialias:true, powerPreference:'high-performance'});
+      if (context) {
+        const { createGlobe } = await import('./globe-3d.js');
+        globe = createGlobe(scene, pick, motionEnabled, canvas, context);
+      }
+    } catch {
+      scene.querySelectorAll('canvas, .globe-marker').forEach(element => element.remove());
+    }
+    if (!globe) {
+      const { createCanvasGlobe } = await import('./globe-2d.js');
+      globe = createCanvasGlobe(scene, pick, motionEnabled);
+    }
+    scene.classList.add('has-globe');
+    $('#globe-instruction').textContent = 'Drag to rotate · tap a pin';
     if (sharedCity || interacted) globe.select(selection);
-  }).catch(() => {
-    $('#globe-instruction').textContent = 'Select a city below';
-  });
+  }
+  const globeObserver = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    globeObserver.disconnect();
+    initializeGlobe().catch(() => {
+      $('#globe-instruction').textContent = 'Select a city below';
+    });
+  }, {rootMargin:'220px'});
+  globeObserver.observe(scene);
   if (sharedCity && !location.hash) requestAnimationFrame(() => arrival.scrollIntoView({behavior:'instant'}));
 
   return {

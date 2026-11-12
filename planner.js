@@ -46,7 +46,7 @@ export function setupPlanner({ programs, saved, readPreference, writePreference,
     for (const program of entries) {
       const row = document.createElement('article');
       row.className = 'planner-row';
-      row.innerHTML = '<div><h3></h3><a target="_blank" rel="noopener noreferrer">Check official details ↗</a></div><label>Application status<select></select></label><label>Confirmed date<input type="date" min="2000-01-01" max="9998-12-31"></label><button type="button">Remove</button>';
+      row.innerHTML = '<div><h3></h3><a target="_blank" rel="noopener noreferrer">Check official details <span class="symbol symbol-arrow" aria-hidden="true"></span></a></div><label>Application status<select></select></label><label>Confirmed date<input type="date" min="2000-01-01" max="9998-12-31"></label><button type="button">Remove</button>';
       row.querySelector('h3').textContent = program.name;
       row.querySelector('a').href = program.url;
       const status = row.querySelector('select');

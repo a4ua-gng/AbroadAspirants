@@ -54,7 +54,8 @@ function syncMotion() {
   document.documentElement.classList.toggle('motion-paused', !enabled);
   motionButton.setAttribute('aria-pressed', String(!enabled));
   motionButton.setAttribute('aria-label', enabled ? 'Pause animation' : 'Resume animation');
-  motionButton.firstElementChild.textContent = enabled ? 'Ⅱ' : '▶';
+  motionButton.firstElementChild.classList.toggle('symbol-pause', enabled);
+  motionButton.firstElementChild.classList.toggle('symbol-play', !enabled);
   flight.refresh();
   updateOpening();
 }
@@ -164,7 +165,7 @@ function renderPrograms() {
   if (!matches.length) {
     const message = document.createElement('p');
     message.className = 'empty';
-    message.textContent = filter === 'saved' && !saved.size ? 'Save a program using the star beside its official link.' : 'No programs match this search.';
+    message.textContent = filter === 'saved' && !saved.size ? 'Save an opportunity to find it here.' : 'No programs match this search.';
     programList.append(message);
   }
   for (const program of matches.slice(0, visiblePrograms)) {
@@ -172,7 +173,7 @@ function renderPrograms() {
     row.className = 'program';
     row.id = 'program-' + program.id;
     row.tabIndex = -1;
-    row.innerHTML = '<div class="program-heading"><span class="code"></span><button class="save" type="button"></button></div><div><h3></h3><small class="program-meta" hidden></small><p></p></div><a target="_blank" rel="noopener noreferrer">Official site ↗</a>';
+    row.innerHTML = '<div class="program-heading"><span class="code"></span><button class="save" type="button"></button></div><div><h3></h3><small class="program-meta" hidden></small><p></p></div><a target="_blank" rel="noopener noreferrer">Official site <span class="symbol symbol-arrow" aria-hidden="true"></span></a>';
     row.querySelector('.code').textContent = program.symbol;
     row.querySelector('h3').textContent = program.name;
     row.querySelector('p').textContent = program.copy;
@@ -188,7 +189,7 @@ function renderPrograms() {
 
     function syncSave() {
       const isSaved = saved.has(program.id);
-      save.textContent = isSaved ? '★' : '☆';
+      save.textContent = isSaved ? 'Saved' : 'Save';
       save.setAttribute('aria-label', 'Save ' + program.name);
       save.setAttribute('aria-pressed', String(isSaved));
     }
@@ -276,7 +277,7 @@ function chooseCategory(index) {
 categoryOptions.forEach(([title, detail, kind], index) => {
   const row = document.createElement('article');
   row.className = 'category-topic';
-  row.innerHTML = '<h3><button type="button"><span aria-hidden="true">+</span></button></h3><div class="category-detail"><p></p><a href="#opportunities">Browse opportunities ↗</a></div>';
+  row.innerHTML = '<h3><button type="button"><span aria-hidden="true">+</span></button></h3><div class="category-detail"><p></p><a href="#opportunities">Browse opportunities <span class="symbol symbol-arrow" aria-hidden="true"></span></a></div>';
   const button = row.querySelector('button');
   const panel = row.querySelector('.category-detail');
   panel.id = 'category-' + kind;

@@ -13,7 +13,7 @@ A student-led study-abroad site with a scroll-driven aircraft-window opening, a 
 ## Edit the experience
 
 - City guides, opportunity URLs and photo credits are in `lib/destinations.js`. Treat the opportunities as research starting points and check the official sites for eligibility, dates and funding.
-- `globe-3d.js` uses Three.js and a land mask derived from public-domain [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) geography via [world.geo.json](https://github.com/johan/world.geo.json).
+- The globe uses Three.js when WebGL is available and a draggable canvas projection on other browsers. Both use a land mask derived from public-domain [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) geography via [world.geo.json](https://github.com/johan/world.geo.json).
 - `flight.js` coordinates globe selection, city links, video scrubbing and the photo reveal.
 - `content.js` contains the application resources and general opportunities.
 - The application planner saves the shortlist, progress and manually confirmed dates in the current browser. It can export confirmed dates as an iCalendar file.
