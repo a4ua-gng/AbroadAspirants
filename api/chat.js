@@ -4,7 +4,7 @@ import { documents, programs } from '../content.js';
 
 const rateWindow = 60_000;
 const calls = new Map();
-const model = process.env.AI_MODEL || 'openai/gpt-5-mini';
+const model = process.env.AI_MODEL || 'openai/gpt-4.1-mini';
 
 function json(error, status) {
   return Response.json({error}, {status,headers:{'Cache-Control':'no-store'}});
@@ -76,10 +76,17 @@ export async function POST(request) {
         sources(city, messages),
       ].join('\n\n'),
       messages:messages.map(({role,content}) => ({role,content})),
-      maxOutputTokens:900,
+      providerOptions:{gateway:{models:['google/gemini-2.5-flash-lite'].filter(id => id !== model)}},
+      maxOutputTokens:700,
       maxRetries:1,
       abortSignal:AbortSignal.timeout(24_000),
-      onError:({error}) => console.warn('AI Gateway stream failed',error?.name ?? 'Error'),
+      onError:({error}) => {
+        const message = String(error?.message ?? '');
+        const category = /billing|credit|payment/i.test(message) ? 'billing'
+          : /permission|forbidden|scope|authenticat/i.test(message) ? 'access'
+          : /unavailable|temporar|timeout/i.test(message) ? 'availability' : 'gateway';
+        console.warn('AI Gateway stream failed',error?.name ?? 'Error',error?.statusCode ?? 'unknown status',category);
+      },
     });
     const reader = response.textStream.getReader();
     const first = await reader.read();
