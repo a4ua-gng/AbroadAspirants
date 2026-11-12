@@ -1,6 +1,6 @@
 # Abroad Aspirants
 
-A student-led study-abroad site with a scroll-driven aircraft-window opening, a WebGL flight globe, six city approaches, landmark photography, an opportunity board, a local application planner, an application template library and an AI advisor.
+A student-led study-abroad site with a wireframe flight globe, six city approaches, landmark photography, an opportunity board, a local application planner, an application template library and an AI advisor.
 
 ## Run locally
 
@@ -19,6 +19,6 @@ A student-led study-abroad site with a scroll-driven aircraft-window opening, a 
 - The application planner saves the shortlist, progress and manually confirmed dates in the current browser. It can export confirmed dates as an iCalendar file.
 - `api/chat.js` streams real AI answers based on the site catalogue. It limits input length and requests per instance. The browser keeps its conversation in memory. AI mode sends messages to the model; Quick guide runs locally.
 - The six 3D city sequences are stylised visualisations. Re-render with `python scripts/render-landings.py` using Pillow and FFmpeg.
-- The site uses real [Unsplash photographs](https://unsplash.com/license). Credits are linked from the city guides and the opportunity categories. The flight photo is [from Unsplash](https://images.unsplash.com/photo-1436491865332-7a61a109cc05). The Abroad Aspirants logo was supplied by the project owner.
+- The site uses real [Unsplash photographs](https://unsplash.com/license). Credits are linked from the city guides and the opportunity categories. The Abroad Aspirants logo was supplied by the project owner.
 
 The intended production domain is `abroadaspirant.in`.

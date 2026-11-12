@@ -19,10 +19,10 @@ function texture() {
   const ctx = map.getContext('2d');
   const isLand = landSampler();
   const ocean = ctx.createLinearGradient(0, 0, map.width, map.height);
-  ocean.addColorStop(0, '#181b59');
-  ocean.addColorStop(.39, '#214ba0');
-  ocean.addColorStop(.72, '#176695');
-  ocean.addColorStop(1, '#12476d');
+  ocean.addColorStop(0, '#121215');
+  ocean.addColorStop(.39, '#1a1a20');
+  ocean.addColorStop(.72, '#17171c');
+  ocean.addColorStop(1, '#0e0e12');
   ctx.fillStyle = ocean;
   ctx.fillRect(0, 0, map.width, map.height);
   for (let y = 0; y < 180; y++) {
@@ -30,16 +30,15 @@ function texture() {
       if (!isLand(x, y)) continue;
       const noise = ((x * 43 + y * 29 + x * y * 7) % 19) / 19;
       const coast = !isLand((x + 1) % 360, y) || !isLand((x + 359) % 360, y) || !isLand(x, y + 1) || !isLand(x, y - 1);
-      const hue = 157 + Math.sin(x / 51) * 24 + Math.cos(y / 18) * 21;
-      ctx.fillStyle = `hsl(${hue} 48% ${coast ? 49 + noise * 7 : 30 + noise * 15}%)`;
+      ctx.fillStyle = `hsl(245 8% ${coast ? 45 + noise * 9 : 16 + noise * 5}%)`;
       ctx.fillRect(x * 4, y * 4, 4, 4);
-      if (!coast && (x + y) % 2 === 0) {
-        ctx.fillStyle = '#b6ebdd6a';
+      if (!coast && x % 4 === 0 && y % 3 === 0) {
+        ctx.fillStyle = '#cbc8d3a1';
         ctx.fillRect(x * 4 + 1, y * 4 + 1, 1, 1);
       }
     }
   }
-  ctx.strokeStyle = '#b9ebfb3c';
+  ctx.strokeStyle = '#c8c5d64f';
   ctx.lineWidth = 1;
   for (let x = 0; x < map.width; x += 60) {
     ctx.beginPath();
@@ -61,7 +60,7 @@ function texture() {
 
 function atmosphere() {
   return new THREE.ShaderMaterial({
-    uniforms: { glow: { value: new THREE.Color('#62bcfb') } },
+    uniforms: { glow: { value: new THREE.Color('#9b89c4') } },
     vertexShader: `
       varying vec3 outward;
       varying vec3 directionToCamera;
@@ -77,7 +76,7 @@ function atmosphere() {
       varying vec3 directionToCamera;
       void main() {
         float intensity = pow(1.0 - abs(dot(normalize(outward), normalize(directionToCamera))), 3.4);
-        gl_FragColor = vec4(glow, intensity * 0.7);
+        gl_FragColor = vec4(glow, intensity * 0.37);
       }`,
     transparent: true,
     depthWrite: false,
@@ -87,7 +86,7 @@ function atmosphere() {
 }
 
 function makeStars() {
-  const values = new Float32Array(390 * 3);
+  const values = new Float32Array(155 * 3);
   let seed = 23;
   function random() {
     seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -99,7 +98,7 @@ function makeStars() {
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(values, 3));
-  return new THREE.Points(geometry, new THREE.PointsMaterial({color: '#cbdfff', size: .024, opacity: .68, transparent: true}));
+  return new THREE.Points(geometry, new THREE.PointsMaterial({color: '#d3cbdc', size: .02, opacity: .52, transparent: true}));
 }
 
 function routeCurve(from, to) {
@@ -127,23 +126,25 @@ export function createGlobe(container, onSelect, motionEnabled, canvas, context)
   const earth = new THREE.Mesh(earthGeometry, new THREE.MeshPhongMaterial({
     map: texture(),
     shininess: 16,
-    specular: new THREE.Color('#193965'),
-    emissive: new THREE.Color('#171b4e'),
+    specular: new THREE.Color('#383343'),
+    emissive: new THREE.Color('#191820'),
     emissiveIntensity: .22,
   }));
   scene.add(earth, makeStars());
   scene.add(new THREE.Mesh(new THREE.SphereGeometry(RADIUS * 1.065, 64, 48), atmosphere()));
-  scene.add(new THREE.HemisphereLight('#dce0ff', '#49438c', 2.15));
-  const key = new THREE.DirectionalLight('#ffdef5', 2.05);
+  scene.add(new THREE.HemisphereLight('#e3e0ed', '#3c3944', 1.8));
+  const key = new THREE.DirectionalLight('#eee8f3', 1.9);
   key.position.set(4, 3, -1);
   scene.add(key);
-  const rim = new THREE.DirectionalLight('#4eeeff', 1.4);
+  const rim = new THREE.DirectionalLight('#ab9ccb', .88);
   rim.position.set(-3, -2, 3);
   scene.add(rim);
 
   const ring = new THREE.Mesh(new THREE.TorusGeometry(1.8, .004, 8, 128), new THREE.MeshBasicMaterial({color:'#c1a7ff',transparent:true,opacity:.44}));
   ring.rotation.set(.92, -.38, .18);
-  scene.add(ring);
+  const crossOrbit = new THREE.Mesh(ring.geometry, new THREE.MeshBasicMaterial({color:'#7dbccf',transparent:true,opacity:.34}));
+  crossOrbit.rotation.set(.85, .6, -.43);
+  scene.add(ring, crossOrbit);
 
   const shipShape = new THREE.Shape();
   shipShape.moveTo(0, .15);
@@ -228,6 +229,7 @@ export function createGlobe(container, onSelect, motionEnabled, canvas, context)
       const vertices = line.geometry.attributes.position.count;
       line.geometry.setDrawRange(0, Math.max(2, Math.ceil(progress * vertices)));
     }
+    ring.rotation.z = .18 + (motion ? Math.sin(now / 3600) * .10 : 0);
     renderer.render(scene, camera);
     if (inView && !document.hidden && motion) animation = requestAnimationFrame(draw);
   }

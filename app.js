@@ -57,7 +57,6 @@ function syncMotion() {
   motionButton.firstElementChild.classList.toggle('symbol-pause', enabled);
   motionButton.firstElementChild.classList.toggle('symbol-play', !enabled);
   flight.refresh();
-  updateOpening();
 }
 
 motionButton.addEventListener('click', () => {
@@ -68,29 +67,21 @@ motionButton.addEventListener('click', () => {
 reducedMotion.addEventListener('change', syncMotion);
 
 const progressBar = $('.progress');
-const opening = $('.opening');
-const openingScreen = $('.opening-screen');
 let scrollFrame = 0;
 
-function updateOpening() {
+function updateProgress() {
   scrollFrame = 0;
   const scrollable = document.documentElement.scrollHeight - innerHeight;
   progressBar.style.transform = `scaleX(${scrollable > 0 ? scrollY / scrollable : 0})`;
-  const top = Number.parseFloat(getComputedStyle(openingScreen).top) || 0;
-  const distance = Math.max(1, opening.offsetHeight - openingScreen.offsetHeight);
-  const progress = motionEnabled() ? Math.max(0, Math.min(1, (top - opening.getBoundingClientRect().top) / distance)) : 0;
-  const eased = progress * progress * (3 - 2 * progress);
-  opening.style.setProperty('--flight-progress', eased);
-  opening.style.setProperty('--window-scale', 1 + eased * 3.15);
-  opening.style.setProperty('--opening-copy', 1 - Math.max(0, (progress - .52) / .48) * .25);
 }
 
-function queueOpeningUpdate() {
-  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateOpening);
+function queueProgressUpdate() {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateProgress);
 }
 
-window.addEventListener('scroll', queueOpeningUpdate, {passive: true});
-window.addEventListener('resize', queueOpeningUpdate);
+window.addEventListener('scroll', queueProgressUpdate, {passive: true});
+window.addEventListener('resize', queueProgressUpdate);
+updateProgress();
 syncMotion();
 
 const programList = $('#programs');

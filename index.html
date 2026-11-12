@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#110d20">
+  <meta name="theme-color" content="#090909">
   <meta name="description" content="Abroad Aspirants is a student-led community from India. Explore scholarships and exchanges, download application examples, and ask other students for help.">
   <meta property="og:title" content="Abroad Aspirants | Find your route abroad">
   <meta property="og:description" content="Discover global opportunities and prepare your next application with a student-led community.">
@@ -34,61 +34,33 @@
   </header>
   <main id="main">
     <section class="opening" id="home" aria-labelledby="hero-title">
-      <div class="opening-screen">
-        <div class="cabin" aria-hidden="true">
-          <div class="cabin-wash"></div>
-          <div class="window-rim"><div class="window-glass"></div></div>
-          <div class="cabin-light"></div>
-        </div>
-        <div class="opening-content shell">
-          <div class="opening-head">
-            <p class="eyebrow">Study abroad · By students</p>
-            <h1 id="hero-title">Study<br> beyond<br> <em>borders.</em></h1>
-          </div>
-          <div class="opening-foot">
-            <div><p>Find scholarships, exchanges and study routes. Take the next step with a student community.</p><a class="button launch-button" href="#atlas">Explore the globe <span class="symbol symbol-arrow" aria-hidden="true"></span></a></div>
-            <a class="scroll-link" href="#journey">Scroll for takeoff <span aria-hidden="true">↓</span></a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="mission" id="journey" aria-labelledby="journey-title">
-      <div class="shell">
-        <div class="mission-intro">
-          <div><p class="eyebrow">From Guwahati to the world</p><h2 id="journey-title">Your route to <em>studying abroad.</em></h2></div>
-          <p>Explore your options while you’re still in school or planning a degree. Check the official details, save the opportunities that fit, and get help preparing your application.</p>
-        </div>
-        <div class="mission-links">
-          <a href="#opportunities"><span>Explore opportunities</span><small>Scholarships, STEM, exchanges and more</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
-          <a href="#planner"><span>Plan an application</span><small>Save programmes and track your deadlines</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
-          <a href="#resources"><span>Prepare your documents</span><small>Recommendation letters, essays and SOPs</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
-          <a href="#community"><span>Meet the community</span><small>Connect with 200+ fellow aspirants</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="hero cinematic-hero" id="atlas" aria-labelledby="atlas-title">
-      <div class="hero-scene" aria-hidden="true"></div>
-      <div class="hero-grid shell">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> 3D destination explorer</p>
-          <h2 id="atlas-title">Pick a city.<br><em>Take flight.</em></h2>
-          <p class="hero-lead">Spin the globe or choose a destination. Follow its flight path and explore local universities, scholarships, and student life.</p>
+      <div class="opening-grid shell">
+        <div class="opening-copy">
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Student-led · Guwahati, India</p>
+          <h1 id="hero-title">Abroad <span>Aspirants.</span></h1>
+          <p class="opening-lead">Find your route abroad.</p>
+          <p class="opening-description">Explore scholarships, exchanges and universities. Get application help from a community of students who are figuring it out together.</p>
           <div class="actions">
-            <a class="button outline" href="#destinations">See all six cities <span aria-hidden="true">↓</span></a>
+            <a class="button primary" href="#destinations">Explore destinations <span class="symbol symbol-arrow" aria-hidden="true"></span></a>
+            <a class="button outline" href="#opportunities">Browse opportunities <span class="symbol symbol-arrow" aria-hidden="true"></span></a>
           </div>
         </div>
-        <div class="flight-console">
+        <div class="flight-console" id="atlas" role="group" aria-label="Interactive destination globe">
           <div class="flight-hud"><span>Departure · GAU</span><span id="flight-hud-destination">Select a destination</span></div>
-          <div id="globe-scene" class="globe-scene" aria-label="3D globe. The destination list below offers all six cities.">
+          <div id="globe-scene" class="globe-scene" aria-label="Interactive globe. You can also choose a city from the list below.">
             <div class="earth-placeholder" aria-hidden="true"></div>
           </div>
           <div class="flight-hud lower-hud"><span><i class="signal" aria-hidden="true"></i> Guwahati, India</span><span id="globe-instruction">Choose a destination</span></div>
         </div>
       </div>
-      <div class="shell city-selector" id="destinations">
-        <div class="city-selector-head"><h2>Choose where to land</h2><p>Tap the globe or pick a city below</p></div>
+    </section>
+
+    <section class="destination-section" id="destinations" aria-labelledby="atlas-title">
+      <div class="shell city-selector">
+        <div class="city-selector-head">
+          <div><p class="eyebrow">Destinations</p><h2 id="atlas-title">Choose where to land.</h2></div>
+          <p>Tap a city to follow its flight path.</p>
+        </div>
         <div class="city-buttons" id="city-buttons" aria-label="Destinations"></div>
       </div>
     </section>
@@ -128,6 +100,21 @@
         <div><h3>Student life</h3><p id="city-life"></p></div>
         <div><h3>Where to start</h3><p id="city-first"></p></div>
         <div class="city-guide-actions"><a class="button primary" href="#opportunities" id="city-board">Browse this city’s opportunities <span class="symbol symbol-arrow" aria-hidden="true"></span></a><button class="button outline" type="button" id="city-chat">Ask about this city <span class="symbol symbol-arrow" aria-hidden="true"></span></button><p id="photo-credit"></p></div>
+      </div>
+    </section>
+
+    <section class="mission" id="journey" aria-labelledby="journey-title">
+      <div class="shell">
+        <div class="mission-intro">
+          <div><p class="eyebrow">From Guwahati to the world</p><h2 id="journey-title">Your route to <em>studying abroad.</em></h2></div>
+          <p>Explore your options while you’re still in school or planning a degree. Check the official details, save the opportunities that fit, and get help preparing your application.</p>
+        </div>
+        <div class="mission-links">
+          <a href="#opportunities"><span>Explore opportunities</span><small>Scholarships, STEM, exchanges and more</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
+          <a href="#planner"><span>Plan an application</span><small>Save programmes and track your deadlines</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
+          <a href="#resources"><span>Prepare your documents</span><small>Recommendation letters, essays and SOPs</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
+          <a href="#community"><span>Meet the community</span><small>Connect with 200+ fellow aspirants</small><b class="symbol symbol-arrow" aria-hidden="true"></b></a>
+        </div>
       </div>
     </section>
 
@@ -221,7 +208,7 @@
       </div>
     </section>
   </main>
-  <footer class="footer"><div class="shell footer-inner"><a class="wordmark" href="#home"><img src="/assets/abroad-aspirants-logo.webp" width="34" height="34" alt=""><span>Abroad Aspirants</span></a><p>© 2026 Abroad Aspirants</p><a href="#schools">Schools</a><a href="#faq">FAQ</a><a href="https://images.unsplash.com/photo-1436491865332-7a61a109cc05" target="_blank" rel="noopener noreferrer">Flight photo credit <span class="symbol symbol-arrow" aria-hidden="true"></span></a><a href="#home">Back to top ↑</a></div></footer>
+  <footer class="footer"><div class="shell footer-inner"><a class="wordmark" href="#home"><img src="/assets/abroad-aspirants-logo.webp" width="34" height="34" alt=""><span>Abroad Aspirants</span></a><p>© 2026 Abroad Aspirants</p><a href="#schools">Schools</a><a href="#faq">FAQ</a><a href="#home">Back to top ↑</a></div></footer>
   <button type="button" class="floating-join button outline" data-join><span class="signal" aria-hidden="true"></span> Join on WhatsApp <span class="symbol symbol-arrow" aria-hidden="true"></span></button>
   <dialog id="join-dialog" aria-labelledby="join-title">
     <div class="dialog-content">

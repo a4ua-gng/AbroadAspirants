@@ -58,11 +58,14 @@ function earthSurface() {
       const mapX = ((Math.floor(longitude / RAD + 180) % 360) + 360) % 360;
       const mapY = clamp(Math.floor(90 - latitude / RAD), 0, 179);
       const land = isLand(mapX, mapY);
-      const grid = mapX % 15 === 0 || mapY % 15 === 0 ? 12 : 0;
-      const latitudeTint = Math.abs(latitude) * 10;
-      pixels[offset] = (land ? 98 + latitudeTint : 34 + latitudeTint) * light + grid;
-      pixels[offset + 1] = (land ? 184 - latitudeTint : 94 - latitudeTint) * light + grid;
-      pixels[offset + 2] = (land ? 172 : 177) * light + grid;
+      const coastline = land && (!isLand((mapX + 1) % 360, mapY) || !isLand((mapX + 359) % 360, mapY)
+        || !isLand(mapX, mapY + 1) || !isLand(mapX, mapY - 1));
+      const dot = land && mapX % 4 === 0 && mapY % 3 === 0;
+      const grid = mapX % 15 === 0 || mapY % 15 === 0;
+      const tone = 14 + (coastline ? 105 : dot ? 64 : land ? 19 : 0) * light + (grid ? 34 * light : 0);
+      pixels[offset] = tone;
+      pixels[offset + 1] = tone;
+      pixels[offset + 2] = tone + 6;
       pixels[offset + 3] = 255;
     }
     ctx.putImageData(image, 0, 0);
@@ -94,16 +97,17 @@ export function createCanvasGlobe(container, onSelect, motionEnabled) {
   let started = 0;
   let scroll = 0;
   let drag;
+  let renderedView;
 
   function draw(now) {
     frame = 0;
     if (!width || !height) return;
     const motion = motionEnabled();
     const ease = motion ? .16 : 1;
-    lat += (targetLat - lat) * ease;
-    lon += (targetLon - lon) * ease;
+    lat = Math.abs(targetLat - lat) < .0008 ? targetLat : lat + (targetLat - lat) * ease;
+    lon = Math.abs(targetLon - lon) < .0008 ? targetLon : lon + (targetLon - lon) * ease;
     const progress = selected && motion ? clamp((now - started) / 820, 0, 1) : 1;
-    const radius = Math.min(width, height) * .36 * (selected ? 1 + (.18 + scroll * .12) * progress : 1);
+    const radius = Math.min(width, height) * .37 * (selected ? 1 + (.18 + scroll * .12) * progress : 1);
     const cx = width / 2;
     const cy = height / 2;
     const sinLat = Math.sin(lat);
@@ -121,22 +125,44 @@ export function createCanvasGlobe(container, onSelect, motionEnabled) {
     }
 
     ctx.clearRect(0, 0, width, height);
-    const glow = ctx.createRadialGradient(cx, cy, radius * .86, cx, cy, radius * 1.24);
-    glow.addColorStop(0, '#c6a3fc74');
-    glow.addColorStop(.54, '#8278f239');
-    glow.addColorStop(1, '#7a8afa00');
+    const glow = ctx.createRadialGradient(cx, cy, radius * .79, cx, cy, radius * 1.24);
+    glow.addColorStop(0, '#bc9be82e');
+    glow.addColorStop(.56, '#9288c51b');
+    glow.addColorStop(1, '#8a91d400');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, width, height);
+
+    const orbit = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
+    orbit.addColorStop(0, '#efa7d978');
+    orbit.addColorStop(.37, '#b088e282');
+    orbit.addColorStop(.7, '#84aaf789');
+    orbit.addColorStop(1, '#79d4de83');
     ctx.lineWidth = 1;
-    ctx.strokeStyle = '#d6bafa68';
+    ctx.strokeStyle = orbit;
     ctx.beginPath();
-    ctx.ellipse(cx, cy, radius * 1.22, radius * .36, -.25, 0, TURN);
+    ctx.ellipse(cx, cy, radius * 1.28, radius * .40, -.38, 0, TURN);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, radius * 1.22, radius * .32, .38, 0, TURN);
     ctx.stroke();
     ctx.drawImage(surface(lat, lon, sinLat, cosLat), cx - radius, cy - radius, radius * 2, radius * 2);
-    ctx.strokeStyle = '#aedbff9f';
+    ctx.strokeStyle = '#d8d6e3a1';
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, TURN);
     ctx.stroke();
+    ctx.strokeStyle = '#d4c5eb53';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, radius * 1.28, radius * .40, -.38, 0, Math.PI);
+    ctx.stroke();
+
+    const angle = motion ? (now / 4800) % TURN : .54;
+    const along = Math.cos(angle) * radius * 1.28;
+    const across = Math.sin(angle) * radius * .40;
+    ctx.fillStyle = '#eee5fb';
+    ctx.beginPath();
+    ctx.arc(cx + along * Math.cos(.38) + across * Math.sin(.38),
+      cy - along * Math.sin(.38) + across * Math.cos(.38), 2.2, 0, TURN);
+    ctx.fill();
 
     const departure = project(origin);
     if (departure.depth > .03) {
@@ -163,15 +189,18 @@ export function createCanvasGlobe(container, onSelect, motionEnabled) {
       ctx.stroke();
     }
 
-    for (const {button, city, location} of markers) {
-      const point = project(location);
-      button.hidden = point.depth < .22 || point.x < 15 || point.x > width - 15 || point.y < 15 || point.y > height - 15;
-      button.style.left = point.x + 'px';
-      button.style.top = point.y + 'px';
-      button.classList.toggle('active', selected === city);
+    const view = [lat, lon, width, height, radius, selected];
+    if (view.some((value, index) => value !== renderedView?.[index])) {
+      for (const {button, city, location} of markers) {
+        const point = project(location);
+        button.hidden = point.depth < .22 || point.x < 15 || point.x > width - 15 || point.y < 15 || point.y > height - 15;
+        button.style.left = point.x + 'px';
+        button.style.top = point.y + 'px';
+        button.classList.toggle('active', selected === city);
+      }
+      renderedView = view;
     }
-    const moving = Math.abs(targetLat - lat) + Math.abs(targetLon - lon) > .0015;
-    if (visible && !document.hidden && motion && (moving || progress < 1)) frame = requestAnimationFrame(draw);
+    if (visible && !document.hidden && motion) frame = requestAnimationFrame(draw);
   }
 
   function refresh() {
