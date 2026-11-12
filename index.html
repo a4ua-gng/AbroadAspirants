@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090c22">
+  <meta name="description" content="Abroad Aspirants is a student-led community from India. Explore scholarships and exchanges, download application examples, and ask other students for help.">
+  <meta property="og:title" content="Abroad Aspirants | Find your route abroad">
+  <meta property="og:description" content="Discover global opportunities and prepare your next application with a student-led community.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://abroadaspirant.in/">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="content.js" defer></script>
+  <script src="globe-data.js" defer></script>
+  <script src="globe.js" defer></script>
+  <script src="app.js" defer></script>
+  <title>Abroad Aspirants | Find your route abroad</title>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="header">
+    <div class="nav shell">
+      <a class="wordmark" href="#home" aria-label="Abroad Aspirants home"><img src="assets/icon.svg" width="40" height="40" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false"><span aria-hidden="true">☰</span> Menu</button>
+      <nav id="navigation" aria-label="Main navigation">
+        <a href="#journey">Flight path</a><a href="#opportunities">Opportunities</a><a href="#resources">Resource lab</a><a href="#desk">Application desk</a>
+      </nav>
+      <div class="nav-actions">
+        <button type="button" id="motion" class="motion" aria-pressed="false" aria-label="Pause animation"><span aria-hidden="true">Ⅱ</span> <span class="motion-label">Motion</span></button>
+        <button type="button" class="button outline join-nav" data-join>Join the community <span aria-hidden="true">↗</span></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero has-photo" id="home" aria-labelledby="hero-title">
+      <div class="hero-scene" aria-hidden="true"></div>
+      <div class="hero-grid shell">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Student-led · India to the world</p>
+          <h1 id="hero-title">The world<br>is <em>wide open.</em></h1>
+          <p class="hero-lead">Explore scholarships and exchanges, get help with your applications, and meet students finding their own way abroad.</p>
+          <div class="actions">
+            <a class="button primary" href="#opportunities">Explore opportunities <span aria-hidden="true">↗</span></a>
+            <a class="button outline" href="#journey">Follow the flight path <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="atlas" aria-label="Interactive globe">
+          <div class="atlas-top"><span>Flight map</span><span><i class="signal" aria-hidden="true"></i> Departing from India</span></div>
+          <div class="atlas-world">
+            <canvas id="globe" width="600" height="600" aria-hidden="true"></canvas>
+            <div class="atlas-fallback" aria-hidden="true"></div>
+          </div>
+          <div class="atlas-bottom">
+            <div class="atlas-destination" aria-live="polite">
+              <span id="route-code">IND → JPN</span>
+              <a id="route-link" href="#opportunities">Japan · MEXT Scholarship <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="route-options" aria-label="Select a flight route">
+              <button type="button" data-route="0" aria-pressed="true" aria-label="Japan">JPN</button>
+              <button type="button" data-route="1" aria-pressed="false" aria-label="Germany">DEU</button>
+              <button type="button" data-route="2" aria-pressed="false" aria-label="United Kingdom">GBR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-foot shell"><a href="#community"><span class="signal" aria-hidden="true"></span> <strong>200+</strong> students in the community</a><span class="map-hint">Drag the globe to look around <span aria-hidden="true">↔</span></span></div>
+    </section>
+
+    <section class="section journey shell" id="journey" aria-labelledby="journey-title">
+      <div class="section-head"><div><p class="eyebrow">Your flight path</p><h2 id="journey-title">Where are you <em>headed?</em></h2></div><p>Start with the step you need today, from finding a program to getting feedback on your application.</p></div>
+      <div class="journey-body">
+        <div class="journey-visual" aria-hidden="true">
+          <div class="journey-grid"></div>
+          <div class="journey-plane" id="journey-plane">✈</div>
+          <span class="journey-origin">IND</span><span class="journey-end">YOUR NEXT STOP</span>
+        </div>
+        <div class="stops">
+          <article class="stop"><span class="stop-marker" aria-hidden="true"></span><div><h3>Find your options</h3><p>Start with your interests and education level. Compare eligibility and funding on each organizer’s website.</p><a href="#opportunities">See the opportunity board <span aria-hidden="true">↗</span></a></div></article>
+          <article class="stop"><span class="stop-marker" aria-hidden="true"></span><div><h3>Build your application</h3><p>Work from sample recommendation letters, an SOP outline and an email you can adapt for a teacher.</p><a href="#resources">Open the resource lab <span aria-hidden="true">↗</span></a></div></article>
+          <article class="stop"><span class="stop-marker" aria-hidden="true"></span><div><h3>Get a second perspective</h3><p>Ask the application desk about common requirements, then take your specific questions to the community.</p><a href="#desk">Ask the application desk <span aria-hidden="true">↗</span></a></div></article>
+          <article class="stop"><span class="stop-marker" aria-hidden="true"></span><div><h3>Bring someone along</h3><p>Share what you learn. A deadline reminder or a thoughtful answer can help the next student get started.</p><a href="#community">Meet the community <span aria-hidden="true">↗</span></a></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section board-section" id="opportunities" aria-labelledby="board-title">
+      <div class="shell">
+        <div class="section-head"><div><p class="eyebrow">Opportunity exchange</p><h2 id="board-title">Find your <em>departure.</em></h2></div><p>Browse program guides and check the official links for current deadlines, funding and eligibility.</p></div>
+        <div class="board">
+          <div class="board-controls">
+            <div class="filters" id="filters" aria-label="Filter programs">
+              <button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="scholarship" aria-pressed="false">Scholarships</button><button type="button" data-filter="stem" aria-pressed="false">STEM</button><button type="button" data-filter="exchange" aria-pressed="false">Exchange</button><button type="button" data-filter="leadership" aria-pressed="false">Leadership</button><button type="button" data-filter="saved" aria-pressed="false">Saved</button>
+            </div>
+            <label class="search"><span aria-hidden="true">⌕</span><input id="program-search" type="search" aria-label="Search programs" placeholder="Search programs"></label>
+          </div>
+          <p class="result-count" id="result-count" role="status"></p>
+          <div id="programs"></div>
+          <noscript><p>Enable JavaScript to filter the board, or explore <a href="https://www.in.emb-japan.go.jp/Education/Undergraduate_Student.html">MEXT</a>, <a href="https://afs.org/global-stem/">AFS Global STEM</a> and <a href="https://in.uwc.org/how-to-apply/">UWC India</a>.</p></noscript>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="resources" aria-labelledby="resources-title">
+      <div class="section-head"><div><p class="eyebrow">Resource lab</p><h2 id="resources-title">Pack your <em>paperwork.</em></h2></div><p>Read or download six free examples. Give your recommender accurate details and let them make the final letter their own.</p></div>
+      <div class="resource-panel panel">
+        <div class="resource-tabs"><h3>Application templates</h3><div id="doc-tabs" role="tablist" aria-label="Application templates"></div></div>
+        <div class="document" id="document" role="tabpanel" tabindex="0">
+          <div class="document-head"><div><h3 id="doc-title"></h3><p id="doc-description"></p></div><div class="actions"><button type="button" id="copy-doc" class="button outline">Copy text</button><button type="button" id="download-doc" class="button outline">Download ↓</button></div></div>
+          <pre id="doc-text" tabindex="0" aria-label="Template text"></pre><p id="doc-status" class="status" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section desk-section" id="desk" aria-labelledby="desk-title">
+      <div class="shell desk-layout">
+        <div class="desk-intro"><p class="eyebrow">Application desk</p><h2 id="desk-title">Ask before you <em>take off.</em></h2><p>The on-site guide gives curated answers on LORs, statements of purpose, CVs and scholarships. Your questions stay in this browser tab.</p><a href="https://chat.whatsapp.com/Ids6JnoyoYY4f7yQ2eGI9h" class="button outline" target="_blank" rel="noopener noreferrer">Chat with students on WhatsApp <span aria-hidden="true">↗</span></a></div>
+        <div class="chat panel">
+          <div class="chat-head"><img src="assets/icon.svg" width="35" height="35" alt=""><div><h3>Abroad Aspirants guide</h3><p>Automated answers</p></div></div>
+          <div class="messages" id="messages" role="log" aria-label="Conversation" tabindex="0"><p class="bubble guide">What are you working on? Ask about a recommendation letter, an essay, finding a scholarship or preparing for an interview.</p></div>
+          <div class="chat-prompts" aria-label="Example questions"><button type="button">How do I ask for an LOR?</button><button type="button">How do I start my SOP?</button><button type="button">How do I find scholarships?</button></div>
+          <form class="chat-form"><label class="sr-only" for="question">Your application question</label><input type="text" id="question" placeholder="Ask about your application" maxlength="350" required><button type="submit" class="button primary">Send <span aria-hidden="true">↗</span></button></form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="community" aria-labelledby="community-title">
+      <div class="community panel">
+        <div><p class="eyebrow">Abroad Aspirants Community</p><h2 id="community-title">Go further <em>together.</em></h2><p>Started in India by students who wanted better access to global opportunities. Share a program, ask about an application, or help someone take their first step.</p><button type="button" class="button primary" data-join>Join us on WhatsApp <span aria-hidden="true">↗</span></button></div>
+        <div class="community-count"><strong>200<span>+</span></strong><span>students in our community</span></div>
+      </div>
+      <div class="crew" aria-labelledby="crew-title"><h3 id="crew-title">Meet the team</h3>
+        <ul><li><span>HD</span><div><strong>Harsh Das</strong><small>Founder</small></div></li><li><span>KT</span><div><strong>Kunjal Tiwari</strong><small>Community admin</small></div></li><li><span>NA</span><div><strong>Nawaz</strong><small>Community admin</small></div></li><li><span>AR</span><div><strong>Arish</strong><small>Content</small></div></li><li><span>SW</span><div><strong>Swara</strong><small>Media lead</small></div></li></ul>
+      </div>
+    </section>
+
+    <section class="section shell last" aria-label="Schools and frequently asked questions">
+      <div class="schools panel" id="schools"><p class="eyebrow">Schools &amp; educators</p><h2>Bring global opportunities to your classroom.</h2><p>Talk with the team about student-led sessions on scholarships, exchanges and application basics.</p><a class="button outline" href="mailto:xtremedivyangshu@gmail.com?subject=Abroad%20Aspirants%20school%20partnership">Email the team <span aria-hidden="true">↗</span></a></div>
+      <div class="faq" id="faq"><h2>Before you go</h2>
+        <details><summary>Is it free to join?</summary><p>Yes. The community and the sample resources on this site are free. Each external program sets its own fees and funding.</p></details>
+        <details><summary>Are all the programs accepting applications?</summary><p>Each listing links to the organizer so you can check current deadlines and eligibility.</p></details>
+        <details><summary>Can a student answer my question?</summary><p>Use the WhatsApp community link to talk to other students. The on-site desk gives curated automatic replies.</p></details>
+        <details><summary>How should I use a recommendation sample?</summary><p>Share accurate examples of your work with your recommender. They should write or finalize the letter based on their own experience with you.</p></details>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="shell footer-inner"><a class="wordmark" href="#home"><img src="assets/icon.svg" width="34" height="34" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a><p>© 2026 Abroad Aspirants</p><a href="#schools">Schools</a><a href="#faq">FAQ</a><a href="#home">Back to top ↑</a></div></footer>
+  <button type="button" class="floating-join button outline" data-join><span class="signal" aria-hidden="true"></span> Join on WhatsApp <span aria-hidden="true">↗</span></button>
+  <dialog id="join-dialog" aria-labelledby="join-title">
+    <div class="dialog-content">
+      <form method="dialog"><button class="dialog-close" aria-label="Close community invitation">×</button></form>
+      <img src="assets/icon.svg" width="54" height="54" alt="">
+      <h2 id="join-title">Meet your fellow aspirants.</h2><p>Join the WhatsApp community to ask students about applications, share opportunities and learn what worked for them.</p>
+      <a href="https://chat.whatsapp.com/Ids6JnoyoYY4f7yQ2eGI9h" class="button primary" target="_blank" rel="noopener noreferrer">Open WhatsApp <span aria-hidden="true">↗</span></a>
+    </div>
+  </dialog>
+</body>
+</html>
