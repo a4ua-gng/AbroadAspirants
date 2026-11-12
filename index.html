@@ -9,12 +9,10 @@
   <meta property="og:description" content="Discover global opportunities and prepare your next application with a student-led community.">
   <meta property="og:type" content="website">
   <link rel="canonical" href="https://abroadaspirant.in/">
-  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script src="content.js" defer></script>
-  <script src="globe-data.js" defer></script>
-  <script src="globe.js" defer></script>
-  <script src="app.js" defer></script>
+  <link rel="icon" href="/assets/abroad-aspirants-logo.webp" type="image/webp">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/cinematic.css">
+  <script type="module" src="/app.js"></script>
   <title>Abroad Aspirants | Find your route abroad</title>
 </head>
 <body>
@@ -22,10 +20,10 @@
   <div class="progress" aria-hidden="true"></div>
   <header class="header">
     <div class="nav shell">
-      <a class="wordmark" href="#home" aria-label="Abroad Aspirants home"><img src="assets/icon.svg" width="40" height="40" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a>
+      <a class="wordmark" href="#home" aria-label="Abroad Aspirants home"><img src="/assets/abroad-aspirants-logo.webp" width="40" height="40" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false"><span aria-hidden="true">☰</span> Menu</button>
       <nav id="navigation" aria-label="Main navigation">
-        <a href="#journey">Flight path</a><a href="#opportunities">Opportunities</a><a href="#resources">Resource lab</a><a href="#desk">Application desk</a>
+        <a href="#destinations">Destinations</a><a href="#opportunities">Opportunities</a><a href="#resources">Resource lab</a><a href="#desk">Application desk</a>
       </nav>
       <div class="nav-actions">
         <button type="button" id="motion" class="motion" aria-pressed="false" aria-label="Pause animation"><span aria-hidden="true">Ⅱ</span> <span class="motion-label">Motion</span></button>
@@ -34,38 +32,68 @@
     </div>
   </header>
   <main id="main">
-    <section class="hero has-photo" id="home" aria-labelledby="hero-title">
+    <section class="hero cinematic-hero has-photo" id="home" aria-labelledby="hero-title">
       <div class="hero-scene" aria-hidden="true"></div>
       <div class="hero-grid shell">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Student-led · India to the world</p>
-          <h1 id="hero-title">The world<br>is <em>wide open.</em></h1>
-          <p class="hero-lead">Explore scholarships and exchanges, get help with your applications, and meet students finding their own way abroad.</p>
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> From Guwahati to the world</p>
+          <h1 id="hero-title">Your next<br>world <em>awaits.</em></h1>
+          <p class="hero-lead">Choose a city. Fly into its skyline, explore official study routes, and get help planning your own journey.</p>
           <div class="actions">
-            <a class="button primary" href="#opportunities">Explore opportunities <span aria-hidden="true">↗</span></a>
-            <a class="button outline" href="#journey">Follow the flight path <span aria-hidden="true">↓</span></a>
+            <a class="button primary" href="#destinations">Choose a destination <span aria-hidden="true">↓</span></a>
+            <a class="button outline" href="#desk">Talk to the AI advisor <span aria-hidden="true">↗</span></a>
           </div>
         </div>
-        <div class="atlas" aria-label="Interactive globe">
-          <div class="atlas-top"><span>Flight map</span><span><i class="signal" aria-hidden="true"></i> Departing from India</span></div>
-          <div class="atlas-world">
-            <canvas id="globe" width="600" height="600" aria-hidden="true"></canvas>
-            <div class="atlas-fallback" aria-hidden="true"></div>
+        <div class="flight-console">
+          <div class="flight-hud"><span>Departure · GAU</span><span id="flight-hud-destination">Select a destination</span></div>
+          <div id="globe-scene" class="globe-scene" aria-label="3D globe. The destination list below offers all six cities.">
+            <div class="earth-placeholder" aria-hidden="true"></div>
           </div>
-          <div class="atlas-bottom">
-            <div class="atlas-destination" aria-live="polite">
-              <span id="route-code">IND → JPN</span>
-              <a id="route-link" href="#opportunities">Japan · MEXT Scholarship <span aria-hidden="true">↗</span></a>
-            </div>
-            <div class="route-options" aria-label="Select a flight route">
-              <button type="button" data-route="0" aria-pressed="true" aria-label="Japan">JPN</button>
-              <button type="button" data-route="1" aria-pressed="false" aria-label="Germany">DEU</button>
-              <button type="button" data-route="2" aria-pressed="false" aria-label="United Kingdom">GBR</button>
-            </div>
-          </div>
+          <div class="flight-hud lower-hud"><span><i class="signal" aria-hidden="true"></i> Guwahati, India</span><span id="globe-instruction">Drag to rotate</span></div>
         </div>
       </div>
-      <div class="hero-foot shell"><a href="#community"><span class="signal" aria-hidden="true"></span> <strong>200+</strong> students in the community</a><span class="map-hint">Drag the globe to look around <span aria-hidden="true">↔</span></span></div>
+      <div class="shell city-selector" id="destinations">
+        <div class="city-selector-head"><h2>Choose where to land</h2><p>Tap the globe or pick a city below</p></div>
+        <div class="city-buttons" id="city-buttons" aria-label="Destinations"></div>
+      </div>
+    </section>
+
+    <section class="arrival" id="arrival" aria-labelledby="arrival-title">
+      <div class="arrival-screen">
+        <img id="city-landmark" class="city-landmark" alt="" fetchpriority="low">
+        <video id="arrival-video" class="arrival-video" muted playsinline preload="none" aria-label="Rendered 3D city approach"></video>
+        <div class="arrival-veil" aria-hidden="true"></div>
+        <div class="arrival-content shell">
+          <div class="arrival-top">
+            <a href="#destinations" class="button outline">↑ Change city</a>
+            <span class="arrival-coordinates" id="arrival-coordinates"></span>
+          </div>
+          <div class="arrival-title">
+            <p class="eyebrow" id="arrival-route"></p>
+            <h2 id="arrival-title" tabindex="-1"></h2>
+            <p id="arrival-landmark-label"></p>
+          </div>
+          <div class="arrival-controls">
+            <button type="button" class="button outline" id="replay">▶ Play 3D approach</button>
+            <a class="button primary" href="#city-guide">Explore opportunities <span aria-hidden="true">↓</span></a>
+            <span class="arrive-hint" id="arrive-hint">Scroll from 3D to the city photo</span>
+          </div>
+        </div>
+        <div class="arrival-progress" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+
+    <section class="section shell city-guide" id="city-guide" aria-labelledby="city-guide-title">
+      <div class="section-head">
+        <div><p class="eyebrow" id="guide-country"></p><h2 id="city-guide-title"></h2></div>
+        <p id="city-intro"></p>
+      </div>
+      <div id="city-opportunities" class="city-opportunities"></div>
+      <div class="city-life panel">
+        <div><h3>Student life</h3><p id="city-life"></p></div>
+        <div><h3>Where to start</h3><p id="city-first"></p></div>
+        <div><button class="button primary" type="button" id="city-chat">Ask the AI about this city <span aria-hidden="true">↗</span></button><p id="photo-credit"></p></div>
+      </div>
     </section>
 
     <section class="section journey shell" id="journey" aria-labelledby="journey-title">
@@ -95,6 +123,10 @@
             </div>
             <label class="search"><span aria-hidden="true">⌕</span><input id="program-search" type="search" aria-label="Search programs" placeholder="Search programs"></label>
           </div>
+          <div class="board-selects">
+            <label>Destination <select id="program-destination"><option value="">All destinations</option></select></label>
+            <label>Study level <select id="program-level"><option value="">All levels</option></select></label>
+          </div>
           <p class="result-count" id="result-count" role="status"></p>
           <div id="programs"></div>
           <noscript><p>Enable JavaScript to filter the board, or explore <a href="https://www.in.emb-japan.go.jp/Education/Undergraduate_Student.html">MEXT</a>, <a href="https://afs.org/global-stem/">AFS Global STEM</a> and <a href="https://in.uwc.org/how-to-apply/">UWC India</a>.</p></noscript>
@@ -115,12 +147,14 @@
 
     <section class="section desk-section" id="desk" aria-labelledby="desk-title">
       <div class="shell desk-layout">
-        <div class="desk-intro"><p class="eyebrow">Application desk</p><h2 id="desk-title">Ask before you <em>take off.</em></h2><p>The on-site guide gives curated answers on LORs, statements of purpose, CVs and scholarships. Your questions stay in this browser tab.</p><a href="https://chat.whatsapp.com/Ids6JnoyoYY4f7yQ2eGI9h" class="button outline" target="_blank" rel="noopener noreferrer">Chat with students on WhatsApp <span aria-hidden="true">↗</span></a></div>
+        <div class="desk-intro"><p class="eyebrow">Application desk</p><h2 id="desk-title">Ask before you <em>take off.</em></h2><p>Plan an application with the AI advisor, practise a mock interview, or find a recommendation template. AI replies use our destination guides and link to official programmes where available.</p><a href="https://chat.whatsapp.com/Ids6JnoyoYY4f7yQ2eGI9h" class="button outline" target="_blank" rel="noopener noreferrer">Chat with students on WhatsApp <span aria-hidden="true">↗</span></a></div>
         <div class="chat panel">
-          <div class="chat-head"><img src="assets/icon.svg" width="35" height="35" alt=""><div><h3>Abroad Aspirants guide</h3><p>Automated answers</p></div></div>
+          <div class="chat-head"><img src="/assets/abroad-aspirants-logo.webp" width="35" height="35" alt=""><div><h3>Abroad Aspirants Application Desk</h3><p id="chat-context">Choose a city for tailored guidance</p></div></div>
+          <div class="chat-modes" aria-label="Choose chat mode"><button type="button" data-chat-mode="ai" aria-pressed="true">AI advisor</button><button type="button" data-chat-mode="guide" aria-pressed="false">Quick guide</button><button type="button" id="clear-chat">Clear chat</button></div>
           <div class="messages" id="messages" role="log" aria-label="Conversation" tabindex="0"><p class="bubble guide">What are you working on? Ask about a recommendation letter, an essay, finding a scholarship or preparing for an interview.</p></div>
-          <div class="chat-prompts" aria-label="Example questions"><button type="button">How do I ask for an LOR?</button><button type="button">How do I start my SOP?</button><button type="button">How do I find scholarships?</button></div>
-          <form class="chat-form"><label class="sr-only" for="question">Your application question</label><input type="text" id="question" placeholder="Ask about your application" maxlength="350" required><button type="submit" class="button primary">Send <span aria-hidden="true">↗</span></button></form>
+          <div class="chat-prompts" id="chat-prompts" aria-label="Example questions"></div>
+          <p class="chat-disclosure">AI mode sends your messages to a model. Leave out passwords, identity numbers, and private documents.</p>
+          <form class="chat-form"><label class="sr-only" for="question">Your application question</label><input type="text" id="question" placeholder="Ask about your application" maxlength="1200" required><button type="submit" id="send-question" class="button primary">Send <span aria-hidden="true">↗</span></button></form>
         </div>
       </div>
     </section>
@@ -136,21 +170,21 @@
     </section>
 
     <section class="section shell last" aria-label="Schools and frequently asked questions">
-      <div class="schools panel" id="schools"><p class="eyebrow">Schools &amp; educators</p><h2>Bring global opportunities to your classroom.</h2><p>Talk with the team about student-led sessions on scholarships, exchanges and application basics.</p><a class="button outline" href="mailto:xtremedivyangshu@gmail.com?subject=Abroad%20Aspirants%20school%20partnership">Email the team <span aria-hidden="true">↗</span></a></div>
+      <div class="schools panel" id="schools"><p class="eyebrow">Schools &amp; educators</p><h2>Bring global opportunities to your classroom.</h2><p>Talk with the team about opportunity-awareness sessions, alumni-led perspectives and a school coordinator who can share application milestones and resources with students.</p><a class="button outline" href="mailto:xtremedivyangshu@gmail.com?subject=Abroad%20Aspirants%20school%20partnership">Email the team <span aria-hidden="true">↗</span></a></div>
       <div class="faq" id="faq"><h2>Before you go</h2>
         <details><summary>Is it free to join?</summary><p>Yes. The community and the sample resources on this site are free. Each external program sets its own fees and funding.</p></details>
         <details><summary>Are all the programs accepting applications?</summary><p>Each listing links to the organizer so you can check current deadlines and eligibility.</p></details>
-        <details><summary>Can a student answer my question?</summary><p>Use the WhatsApp community link to talk to other students. The on-site desk gives curated automatic replies.</p></details>
+        <details><summary>Can a student answer my question?</summary><p>Use the WhatsApp community link to talk to other students. The Application Desk offers an AI advisor and a quick guide. For peer discussion, use WhatsApp.</p></details>
         <details><summary>How should I use a recommendation sample?</summary><p>Share accurate examples of your work with your recommender. They should write or finalize the letter based on their own experience with you.</p></details>
       </div>
     </section>
   </main>
-  <footer class="footer"><div class="shell footer-inner"><a class="wordmark" href="#home"><img src="assets/icon.svg" width="34" height="34" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a><p>© 2026 Abroad Aspirants</p><a href="#schools">Schools</a><a href="#faq">FAQ</a><a href="#home">Back to top ↑</a></div></footer>
+  <footer class="footer"><div class="shell footer-inner"><a class="wordmark" href="#home"><img src="/assets/abroad-aspirants-logo.webp" width="34" height="34" alt=""><span>abroad<br>aspirants<span class="dot">.</span></span></a><p>© 2026 Abroad Aspirants</p><a href="#schools">Schools</a><a href="#faq">FAQ</a><a href="#home">Back to top ↑</a></div></footer>
   <button type="button" class="floating-join button outline" data-join><span class="signal" aria-hidden="true"></span> Join on WhatsApp <span aria-hidden="true">↗</span></button>
   <dialog id="join-dialog" aria-labelledby="join-title">
     <div class="dialog-content">
       <form method="dialog"><button class="dialog-close" aria-label="Close community invitation">×</button></form>
-      <img src="assets/icon.svg" width="54" height="54" alt="">
+      <img src="/assets/abroad-aspirants-logo.webp" width="54" height="54" alt="">
       <h2 id="join-title">Meet your fellow aspirants.</h2><p>Join the WhatsApp community to ask students about applications, share opportunities and learn what worked for them.</p>
       <a href="https://chat.whatsapp.com/Ids6JnoyoYY4f7yQ2eGI9h" class="button primary" target="_blank" rel="noopener noreferrer">Open WhatsApp <span aria-hidden="true">↗</span></a>
     </div>

@@ -63,11 +63,6 @@ nav a:hover { color: #94daff; }
   linear-gradient(90deg, #090c22e0 0%, #090c2250 58%, #14122f30 100%),
   radial-gradient(ellipse at 65% 55%, #253c8c 0%, #211750 42%, #090c22 75%);
 }
-.hero.has-photo .hero-scene { background:
-  linear-gradient(0deg, #090c22 0%, #090c2208 45%, #090c2290 100%),
-  linear-gradient(90deg, #090c22d9 0%, #090c2240 57%, #090c2230 100%),
-  url("assets/himalayas.webp") center 58% / cover, var(--night);
-}
 .hero-grid { min-height: min(690px, calc(100svh - 142px)); padding-block: 48px 25px; display: grid; grid-template-columns: .92fr 1fr; gap: 32px; align-items: center; }
 .hero-copy { padding-block: 22px; z-index: 1; }
 .hero h1 { margin: 23px 0 24px; font-size: clamp(59px, 7.65vw, 121px); line-height: .98; font-weight: 750; }

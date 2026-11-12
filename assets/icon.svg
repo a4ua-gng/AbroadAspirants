@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs><linearGradient id="aa" x1="0%" x2="100%" y1="100%" y2="0%" gradientUnits="objectBoundingBox"><stop stop-color="#7B2FF7"/><stop offset=".55" stop-color="#2563EB"/><stop offset="1" stop-color="#38BDF8"/></linearGradient></defs>
-  <rect width="64" height="64" rx="15" fill="#101734"/>
-  <g fill="none" stroke="url(#aa)" stroke-width="2.1">
-    <circle cx="31" cy="33" r="19"/><ellipse cx="31" cy="33" rx="9" ry="19"/><path d="M12 33h38M16 23h30M16 43h30"/>
-    <ellipse cx="31" cy="33" rx="28" ry="10" transform="rotate(-35 31 33)" stroke="#a3cdff"/>
-  </g>
-  <path d="m48 11 11-3-4 11-2-4-5-4Z" fill="#e5f5ff"/>
-</svg>

@@ -1,21 +1,23 @@
 # Abroad Aspirants
 
-A student-led study-abroad community from India. This build includes a draggable flight globe, an opportunity board, application templates and a browser-local application guide.
+A student-led study-abroad site with a WebGL flight globe, six city approaches, landmark photography, an opportunity board, an application template library and an AI advisor.
 
-## Preview
+## Run locally
 
-Open `index.html` in a modern browser, or serve the repository root with `python3 -m http.server 8000` and open `http://localhost:8000`.
+- Install with `npm ci`.
+- Run `npm run dev` for the browser interface. Direct /city/ links are supported by Vite during development.
+- Run `npm run build` to build the Vite site.
+- Run `vercel dev` to exercise both the site and the Vercel chat function locally. Give the server a Vercel AI Gateway key through `AI_GATEWAY_API_KEY` or pull the project’s Vercel OIDC credentials into `.env.local`. Set `AI_MODEL` to override the default Gateway model.
+- On Vercel, the frontend builds to `dist/` and the Node.js chat function lives at `/api/chat`. On an authenticated Vercel deployment, AI Gateway can use the runtime OIDC token. See [Vercel AI Gateway authentication](https://vercel.com/docs/ai-gateway/authentication-and-byok). The Quick guide remains usable without model access.
 
-## Editing
+## Edit the experience
 
-- `index.html` contains the page structure, community links and team.
-- `styles.css` contains the visual theme. The brand gradient runs from `#7B2FF7` through `#2563EB` to `#38BDF8`.
-- `content.js` contains program listings, document templates and curated answers.
-- `globe.js` contains the canvas renderer and route definitions. Its land mask in `globe-data.js` is derived from public-domain [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) geometry distributed via [world.geo.json](https://github.com/johan/world.geo.json).
-- `assets/himalayas.webp` is a generated aerial background inspired by the Himalayas.
+- City guides, opportunity URLs and photo credits are in `lib/destinations.js`. Treat the opportunities as research starting points and check the official sites for eligibility, dates and funding.
+- `globe-3d.js` uses Three.js and a land mask derived from public-domain [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) geography via [world.geo.json](https://github.com/johan/world.geo.json).
+- `flight.js` coordinates globe selection, city links, video scrubbing and the photo reveal.
+- `content.js` contains the original application resources and general opportunities.
+- `api/chat.js` streams real AI answers based on the site catalogue. It limits input length and requests per instance. The browser keeps its conversation in memory. AI mode sends messages to the model; Quick guide runs locally.
+- The six 3D city sequences are stylised visualisations. Re-render with `python scripts/render-landings.py` using Pillow and FFmpeg.
+- The site uses real [Unsplash photographs](https://unsplash.com/license). Credits are linked from the city guides. The flight photo is [from Unsplash](https://images.unsplash.com/photo-1436491865332-7a61a109cc05). The Abroad Aspirants logo was supplied by the project owner.
 
-Saved programs and motion preferences use local browser storage. Application guide messages live in the current tab. Live peer chat opens in the community’s WhatsApp group.
-
-## Hosting
-
-The repository root is a buildless static site. To publish on GitHub Pages, select **Settings → Pages → Deploy from a branch → main → / (root)**. The intended public domain is `abroadaspirant.in`. Follow [GitHub’s custom-domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) to add and verify the domain and configure DNS.
+The intended production domain is `abroadaspirant.in`.

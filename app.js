@@ -1,3 +1,8 @@
+import { programs, documents } from './content.js';
+import { cities } from './lib/destinations.js';
+import { setupFlight } from './flight.js';
+import { setupChat } from './chat.js';
+
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
@@ -39,7 +44,9 @@ const motionButton = $('#motion');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let motionPreference = readPreference('aa-motion', null);
 const motionEnabled = () => motionPreference ?? !reducedMotion.matches;
-const globe = setupGlobe($('#globe'), motionEnabled);
+const chat = setupChat();
+const flight = setupFlight({ motionEnabled, onCityChange: chat.setCity });
+$('#city-chat').addEventListener('click', () => chat.startForCity(flight.current()));
 
 function syncMotion() {
   const enabled = motionEnabled();
@@ -47,7 +54,7 @@ function syncMotion() {
   motionButton.setAttribute('aria-pressed', String(!enabled));
   motionButton.setAttribute('aria-label', enabled ? 'Pause animation' : 'Resume animation');
   motionButton.firstElementChild.textContent = enabled ? 'Ⅱ' : '▶';
-  globe.refresh();
+  flight.refresh();
   updateJourney();
 }
 
@@ -57,22 +64,6 @@ motionButton.addEventListener('click', () => {
   syncMotion();
 });
 reducedMotion.addEventListener('change', syncMotion);
-
-const routeButtons = $$('[data-route]');
-const routeLink = $('#route-link');
-
-routeButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const index = Number(button.dataset.route);
-    const route = routes[index];
-    globe.select(index);
-    for (const option of routeButtons) option.setAttribute('aria-pressed', String(option === button));
-    $('#route-code').textContent = `IND → ${route.code}`;
-    routeLink.firstChild.nodeValue = route.name + ' ';
-    routeLink.hash = 'program-' + route.program;
-  });
-});
-routeLink.hash = 'program-' + routes[0].program;
 
 const progressBar = $('.progress');
 const journey = $('.journey-body');
@@ -108,16 +99,44 @@ const programList = $('#programs');
 const resultCount = $('#result-count');
 const search = $('#program-search');
 const filterButtons = $$('[data-filter]');
+const destinationSelect = $('#program-destination');
+const levelSelect = $('#program-level');
+const catalog = new Map(programs.map(program => [program.url, {...program}]));
+for (const city of cities) {
+  destinationSelect.add(new Option(city.name, city.id));
+  for (const [index, opportunity] of city.opportunities.entries()) {
+    const existing = catalog.get(opportunity.url);
+    const funding = /scholarship|funding|financial aid/i.test(opportunity.type);
+    catalog.set(opportunity.url, {
+      id: existing?.id ?? city.id + '-' + index,
+      name: opportunity.title,
+      symbol: city.code,
+      url: opportunity.url,
+      copy: opportunity.detail,
+      tag: city.country + ' ' + opportunity.type,
+      cat: existing?.cat ?? (funding ? 'scholarship' : opportunity.title.startsWith('Imperial') ? 'stem' : ''),
+      city: city.id,
+      level: opportunity.level,
+      type: opportunity.type,
+    });
+  }
+}
+for (const level of new Set([...catalog.values()].map(program => program.level).filter(Boolean))) {
+  levelSelect.add(new Option(level, level));
+}
+
 const storedPrograms = readPreference('aa-saved-programs', []);
 const saved = new Set(Array.isArray(storedPrograms) ? storedPrograms : []);
 let filter = 'all';
 
 function renderPrograms() {
   const searchTerm = search.value.trim().toLowerCase();
-  const matches = programs.filter(program => {
+  const matches = [...catalog.values()].filter(program => {
     const categoryMatch = filter === 'all' || program.cat.split(' ').includes(filter)
       || (filter === 'saved' && saved.has(program.id));
-    return categoryMatch && `${program.name} ${program.tag} ${program.copy}`.toLowerCase().includes(searchTerm);
+    const destinationMatch = !destinationSelect.value || program.city === destinationSelect.value;
+    const levelMatch = !levelSelect.value || program.level === levelSelect.value;
+    return categoryMatch && destinationMatch && levelMatch && `${program.name} ${program.tag} ${program.copy}`.toLowerCase().includes(searchTerm);
   });
 
   programList.replaceChildren();
@@ -133,10 +152,15 @@ function renderPrograms() {
     row.className = 'program';
     row.id = 'program-' + program.id;
     row.tabIndex = -1;
-    row.innerHTML = '<span class="code"></span><div><h3></h3><p></p></div><a target="_blank" rel="noopener noreferrer">Official site ↗</a><button class="save" type="button"></button>';
+    row.innerHTML = '<span class="code"></span><div><h3></h3><small class="program-meta" hidden></small><p></p></div><a target="_blank" rel="noopener noreferrer">Official site ↗</a><button class="save" type="button"></button>';
     row.querySelector('.code').textContent = program.symbol;
     row.querySelector('h3').textContent = program.name;
     row.querySelector('p').textContent = program.copy;
+    if (program.level) {
+      const meta = row.querySelector('.program-meta');
+      meta.hidden = false;
+      meta.textContent = program.level + ' · ' + program.type;
+    }
     const link = row.querySelector('a');
     link.href = program.url;
     link.setAttribute('aria-label', 'Official site for ' + program.name);
@@ -171,11 +195,8 @@ function setFilter(value) {
 
 filterButtons.forEach(button => button.addEventListener('click', () => setFilter(button.dataset.filter)));
 search.addEventListener('input', renderPrograms);
-routeLink.addEventListener('click', () => {
-  search.value = '';
-  setFilter('all');
-  document.getElementById(routeLink.hash.slice(1))?.focus({preventScroll: true});
-});
+destinationSelect.addEventListener('change', renderPrograms);
+levelSelect.addEventListener('change', renderPrograms);
 renderPrograms();
 
 const docPanel = $('#document');
@@ -251,43 +272,6 @@ $('#download-doc').addEventListener('click', () => {
   docStatus.textContent = 'Download started.';
 });
 showDocument(0);
-
-const answerTopics = [
-  [/\b(private|privacy|password|passport|identity)\b/i, 'privacy'],
-  [/\b(lor|lors|recommendation|recommendations|referee|reference letter)\b/i, 'lor'],
-  [/\b(sop|statement of purpose|motivation|personal statement|essay)\b/i, 'sop'],
-  [/\b(cv|resume|résumé|portfolio)\b/i, 'cv'],
-  [/\b(interview|interviews)\b/i, 'interview'],
-  [/\b(email|mail|teacher)\b/i, 'email'],
-  [/\b(deadline|deadline[s]?|eligibility|due date|close)\b/i, 'deadline'],
-  [/\b(scholarship|scholarships|funding|mext|uwc|afs|exchange)\b/i, 'scholarship'],
-];
-const messages = $('#messages');
-const question = $('#question');
-
-function ask(text) {
-  const clean = text.trim();
-  if (!clean) return;
-  const topic = answerTopics.find(([pattern]) => pattern.test(clean))?.[1] ?? 'default';
-  for (const [name, role, message] of [['You', 'you', clean], ['Guide', 'guide', answers[topic]]]) {
-    const bubble = document.createElement('p');
-    bubble.className = 'bubble ' + role;
-    const speaker = document.createElement('span');
-    speaker.className = 'sr-only';
-    speaker.textContent = name + ': ';
-    bubble.append(speaker, message);
-    messages.append(bubble);
-  }
-  messages.scrollTop = messages.scrollHeight;
-}
-
-$('.chat-form').addEventListener('submit', event => {
-  event.preventDefault();
-  ask(question.value);
-  question.value = '';
-  question.focus();
-});
-$$('.chat-prompts button').forEach(button => button.addEventListener('click', () => ask(button.textContent)));
 
 const invite = $('#join-dialog');
 $$('[data-join]').forEach(button => button.addEventListener('click', () => invite.showModal()));
