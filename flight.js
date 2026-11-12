@@ -23,6 +23,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     button.type = 'button';
     button.className = 'city-button';
     button.style.setProperty('--city-color', city.color);
+    button.style.setProperty('--city-image', `url('/assets/cities/${city.id}.webp')`);
     button.innerHTML = '<strong></strong><span aria-hidden="true"></span><small></small>';
     button.children[0].textContent = city.name;
     button.children[1].textContent = city.code;

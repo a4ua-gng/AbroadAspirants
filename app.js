@@ -2,6 +2,7 @@ import { programs, documents } from './content.js';
 import { cities } from './lib/destinations.js';
 import { setupFlight } from './flight.js';
 import { setupChat } from './chat.js';
+import { setupPlanner } from './planner.js';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -55,7 +56,7 @@ function syncMotion() {
   motionButton.setAttribute('aria-label', enabled ? 'Pause animation' : 'Resume animation');
   motionButton.firstElementChild.textContent = enabled ? 'Ⅱ' : '▶';
   flight.refresh();
-  updateJourney();
+  updateOpening();
 }
 
 motionButton.addEventListener('click', () => {
@@ -66,33 +67,29 @@ motionButton.addEventListener('click', () => {
 reducedMotion.addEventListener('change', syncMotion);
 
 const progressBar = $('.progress');
-const journey = $('.journey-body');
-const stops = $$('.stop');
-const journeyPlane = $('#journey-plane');
+const opening = $('.opening');
+const openingScreen = $('.opening-screen');
 let scrollFrame = 0;
 
-function updateJourney() {
+function updateOpening() {
   scrollFrame = 0;
   const scrollable = document.documentElement.scrollHeight - innerHeight;
   progressBar.style.transform = `scaleX(${scrollable > 0 ? scrollY / scrollable : 0})`;
-  const bounds = journey.getBoundingClientRect();
-  const progress = Math.max(0, Math.min(1, (innerHeight * .59 - bounds.top) / (bounds.height * .83)));
-  const current = Math.min(stops.length - 1, Math.floor(progress * stops.length));
-  stops.forEach((stop, index) => stop.classList.toggle('active', index === current));
-  const position = motionEnabled() ? progress : current / (stops.length - 1);
-  const x = 18 + position * 66;
-  const y = 78 - position * 58 - Math.sin(position * Math.PI) * 13;
-  journeyPlane.style.left = `${x}%`;
-  journeyPlane.style.top = `${y}%`;
-  journeyPlane.style.transform = `translate(-50%, -50%) rotate(${-23 + position * 26}deg)`;
+  const top = Number.parseFloat(getComputedStyle(openingScreen).top) || 0;
+  const distance = Math.max(1, opening.offsetHeight - openingScreen.offsetHeight);
+  const progress = motionEnabled() ? Math.max(0, Math.min(1, (top - opening.getBoundingClientRect().top) / distance)) : 0;
+  const eased = progress * progress * (3 - 2 * progress);
+  opening.style.setProperty('--flight-progress', eased);
+  opening.style.setProperty('--window-scale', 1 + eased * 3.15);
+  opening.style.setProperty('--opening-copy', 1 - Math.max(0, (progress - .52) / .48) * .25);
 }
 
-function queueJourneyUpdate() {
-  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateJourney);
+function queueOpeningUpdate() {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateOpening);
 }
 
-window.addEventListener('scroll', queueJourneyUpdate, {passive: true});
-window.addEventListener('resize', queueJourneyUpdate);
+window.addEventListener('scroll', queueOpeningUpdate, {passive: true});
+window.addEventListener('resize', queueOpeningUpdate);
 syncMotion();
 
 const programList = $('#programs');
@@ -101,7 +98,10 @@ const search = $('#program-search');
 const filterButtons = $$('[data-filter]');
 const destinationSelect = $('#program-destination');
 const levelSelect = $('#program-level');
-const catalog = new Map(programs.map(program => [program.url, {...program}]));
+const showMore = $('#show-more-programs');
+const savedCount = $('#saved-count');
+const pageSize = 9;
+const catalog = new Map(programs.map(program => [program.url, program]));
 for (const city of cities) {
   destinationSelect.add(new Option(city.name, city.id));
   for (const [index, opportunity] of city.opportunities.entries()) {
@@ -128,6 +128,24 @@ for (const level of new Set([...catalog.values()].map(program => program.level).
 const storedPrograms = readPreference('aa-saved-programs', []);
 const saved = new Set(Array.isArray(storedPrograms) ? storedPrograms : []);
 let filter = 'all';
+let visiblePrograms = pageSize;
+const byId = new Map([...catalog.values()].map(program => [program.id, program]));
+const planner = setupPlanner({
+  programs:byId, saved, readPreference, writePreference,
+  onRemove:id => {
+    setSaved(id, false);
+    renderPrograms();
+  },
+});
+
+function setSaved(id, selected) {
+  if (selected) saved.add(id);
+  else saved.delete(id);
+  writePreference('aa-saved-programs', [...saved]);
+  const total = [...saved].filter(value => byId.has(value)).length;
+  savedCount.textContent = total ? '(' + total + ')' : '';
+  planner.render();
+}
 
 function renderPrograms() {
   const searchTerm = search.value.trim().toLowerCase();
@@ -140,26 +158,28 @@ function renderPrograms() {
   });
 
   programList.replaceChildren();
-  resultCount.textContent = `${matches.length} ${matches.length === 1 ? 'program' : 'programs'}`;
+  resultCount.textContent = `${matches.length} ${matches.length === 1 ? 'opportunity' : 'opportunities'}`;
+  showMore.hidden = matches.length <= visiblePrograms;
+  if (!showMore.hidden) showMore.textContent = `Show more (${matches.length - visiblePrograms}) ↓`;
   if (!matches.length) {
     const message = document.createElement('p');
     message.className = 'empty';
     message.textContent = filter === 'saved' && !saved.size ? 'Save a program using the star beside its official link.' : 'No programs match this search.';
     programList.append(message);
   }
-  for (const program of matches) {
+  for (const program of matches.slice(0, visiblePrograms)) {
     const row = document.createElement('article');
     row.className = 'program';
     row.id = 'program-' + program.id;
     row.tabIndex = -1;
-    row.innerHTML = '<span class="code"></span><div><h3></h3><small class="program-meta" hidden></small><p></p></div><a target="_blank" rel="noopener noreferrer">Official site ↗</a><button class="save" type="button"></button>';
+    row.innerHTML = '<div class="program-heading"><span class="code"></span><button class="save" type="button"></button></div><div><h3></h3><small class="program-meta" hidden></small><p></p></div><a target="_blank" rel="noopener noreferrer">Official site ↗</a>';
     row.querySelector('.code').textContent = program.symbol;
     row.querySelector('h3').textContent = program.name;
     row.querySelector('p').textContent = program.copy;
     if (program.level) {
       const meta = row.querySelector('.program-meta');
       meta.hidden = false;
-      meta.textContent = program.level + ' · ' + program.type;
+      meta.textContent = [program.level, program.type].filter(Boolean).join(' · ');
     }
     const link = row.querySelector('a');
     link.href = program.url;
@@ -175,9 +195,7 @@ function renderPrograms() {
 
     syncSave();
     save.addEventListener('click', () => {
-      if (saved.has(program.id)) saved.delete(program.id);
-      else saved.add(program.id);
-      writePreference('aa-saved-programs', [...saved]);
+      setSaved(program.id, !saved.has(program.id));
       if (filter === 'saved') {
         renderPrograms();
         (programList.querySelector('.save') ?? filterButtons.at(-1)).focus();
@@ -189,15 +207,87 @@ function renderPrograms() {
 
 function setFilter(value) {
   filter = value;
+  visiblePrograms = pageSize;
   filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === value)));
   renderPrograms();
 }
 
+function browsePrograms(category, destination = '') {
+  search.value = '';
+  destinationSelect.value = destination;
+  levelSelect.value = '';
+  setFilter(category);
+}
+
+function resetBoard() {
+  visiblePrograms = pageSize;
+  renderPrograms();
+}
+
+$('#city-board').addEventListener('click', () => browsePrograms('all', flight.current().id));
 filterButtons.forEach(button => button.addEventListener('click', () => setFilter(button.dataset.filter)));
-search.addEventListener('input', renderPrograms);
-destinationSelect.addEventListener('change', renderPrograms);
-levelSelect.addEventListener('change', renderPrograms);
+search.addEventListener('input', resetBoard);
+destinationSelect.addEventListener('change', resetBoard);
+levelSelect.addEventListener('change', resetBoard);
+showMore.addEventListener('click', () => {
+  const next = visiblePrograms;
+  visiblePrograms += pageSize;
+  renderPrograms();
+  programList.children[next]?.focus();
+});
 renderPrograms();
+const savedTotal = [...saved].filter(id => byId.has(id)).length;
+savedCount.textContent = savedTotal ? '(' + savedTotal + ')' : '';
+planner.render();
+
+const categoryPhotos = {
+  study: ['Students working together around a table', 'https://images.unsplash.com/photo-1523240795612-9a054b0db644'],
+  projects: ['A group collaborating around a table', 'https://images.unsplash.com/photo-1519389950473-47ba0277781c'],
+  classroom: ['A classroom during a lesson', 'https://images.unsplash.com/photo-1509062522246-3755977927d7'],
+  campus: ['Graduates tossing their caps on campus', 'https://unsplash.com/photos/hpRGrfOIybc'],
+};
+const categoryOptions = [
+  ['Scholarships and funding', 'Look up funding for undergraduate and postgraduate study, then check costs and award terms directly.', 'scholarship', 'study'],
+  ['Exchanges and summer programmes', 'Explore short programmes, school exchanges and summer learning with students from different places.', 'exchange', 'campus'],
+  ['STEM and research', 'Find ways to investigate a question, build a project, or learn from an international STEM cohort.', 'stem', 'projects'],
+  ['Olympiads and competitions', 'Compare routes for maths contests, science fairs and technology challenges for school students.', 'competition', 'classroom'],
+  ['Leadership', 'Find programmes that let you practise collaboration, organise projects and contribute to a community.', 'leadership', 'study'],
+];
+const categoryList = $('#category-list');
+const categoryPhoto = $('#category-photo');
+const categoryCaption = $('#category-caption');
+const categoryCredit = $('#category-credit');
+
+function chooseCategory(index) {
+  [...categoryList.children].forEach((row, rowIndex) => {
+    const active = rowIndex === index;
+    row.querySelector('button').setAttribute('aria-expanded', String(active));
+    row.querySelector('button span').textContent = active ? '−' : '+';
+    row.querySelector('.category-detail').hidden = !active;
+  });
+  const photo = categoryOptions[index][3];
+  const [caption, credit] = categoryPhotos[photo];
+  categoryPhoto.src = '/assets/editorial/' + photo + '.webp';
+  categoryPhoto.alt = caption;
+  categoryCaption.textContent = caption;
+  categoryCredit.href = credit;
+}
+
+categoryOptions.forEach(([title, detail, kind], index) => {
+  const row = document.createElement('article');
+  row.className = 'category-topic';
+  row.innerHTML = '<h3><button type="button"><span aria-hidden="true">+</span></button></h3><div class="category-detail"><p></p><a href="#opportunities">Browse opportunities ↗</a></div>';
+  const button = row.querySelector('button');
+  const panel = row.querySelector('.category-detail');
+  panel.id = 'category-' + kind;
+  button.setAttribute('aria-controls', panel.id);
+  button.prepend(title);
+  button.addEventListener('click', () => chooseCategory(index));
+  row.querySelector('p').textContent = detail;
+  row.querySelector('a').addEventListener('click', () => browsePrograms(kind));
+  categoryList.append(row);
+});
+chooseCategory(0);
 
 const docPanel = $('#document');
 const docText = $('#doc-text');

@@ -23,7 +23,7 @@ export function setupChat() {
   const prompts = $('#chat-prompts');
   const modeButtons = [...document.querySelectorAll('[data-chat-mode]')];
   const transcripts = {ai:[], guide:[]};
-  let mode = 'ai';
+  let mode = 'guide';
   let city;
   let request;
 
@@ -89,6 +89,7 @@ export function setupChat() {
       ['Request an LOR', 'How do I ask for an LOR?'],
       ['Start an SOP', 'How do I start my SOP?'],
       ['Find scholarships', 'How do I find scholarships?'],
+      ...(city ? [[`Study in ${city.name}`, `Where can I find study and funding opportunities in ${city.name}?`]] : []),
     ];
     prompts.replaceChildren(...examples.map(([label, text]) => {
       const button = document.createElement('button');
@@ -122,8 +123,16 @@ export function setupChat() {
     bubble('user', text);
     if (mode === 'guide') {
       const key = topics.find(([pattern]) => pattern.test(text))?.[1] ?? 'default';
-      transcript.push({role:'assistant',text:answers[key]});
-      bubble('assistant', answers[key]);
+      const namedCity = cities.find(item => text.toLowerCase().includes(item.name.toLowerCase()));
+      const destination = namedCity ?? (/\bthis city\b/i.test(text) ? city : undefined);
+      const cityQuestion = destination && /\b(study|funding|universit(?:y|ies)|programmes?|programs?|opportunities|scholarships?)\b/i.test(text)
+        && ['default', 'deadline', 'scholarship'].includes(key);
+      const reply = cityQuestion
+        ? [destination.intro, ...destination.opportunities.map(item => `[${item.title}](${item.url}) · ${item.level} · ${item.type}`),
+          'Open the official pages to confirm eligibility, dates and funding.'].join('\n\n')
+        : answers[key];
+      transcript.push({role:'assistant',text:reply});
+      linkReply(bubble('assistant', reply), reply);
       return;
     }
 
@@ -193,8 +202,7 @@ export function setupChat() {
     setCity,
     startForCity(next) {
       setCity(next);
-      setMode('ai');
-      question.value = `Help me find study and funding options in ${next.name}.`;
+      question.value = `Where can I find study and funding opportunities in ${next.name}?`;
       $('#desk').scrollIntoView();
       question.focus({preventScroll:true});
     },
