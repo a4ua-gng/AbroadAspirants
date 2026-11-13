@@ -2,6 +2,8 @@ import { programs, documents } from './content.js';
 import { cities } from './lib/destinations.js';
 import { setupFlight } from './flight.js';
 import { setupChat } from './chat.js';
+import { setupAccount } from './account.js';
+import { setupJourney } from './journey.js';
 import { setupPlanner } from './planner.js';
 
 const $ = selector => document.querySelector(selector);
@@ -18,6 +20,7 @@ function readPreference(key, fallback) {
 function writePreference(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    window.dispatchEvent(new CustomEvent('aa-local-change', {detail:key}));
   } catch {
     // Current-tab interactions work when storage is unavailable.
   }
@@ -46,7 +49,8 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let motionPreference = readPreference('aa-motion', null);
 const motionEnabled = () => motionPreference ?? !reducedMotion.matches;
 const chat = setupChat();
-const flight = setupFlight({ motionEnabled, onCityChange: chat.setCity });
+const flight = setupFlight({ motionEnabled, onCityChange: city => { chat.setCity(city); window.dispatchEvent(new CustomEvent('aa-city', {detail:city})); } });
+setupJourney({flight, motionEnabled});
 $('#city-chat').addEventListener('click', () => chat.startForCity(flight.current()));
 
 function syncMotion() {
@@ -360,3 +364,14 @@ $$('[data-join]').forEach(button => button.addEventListener('click', () => invit
 invite.addEventListener('click', event => {
   if (event.target === invite) invite.close();
 });
+
+window.addEventListener('aa-save-city', event => {setSaved(event.detail.id, event.detail.selected);renderPrograms();});
+setupAccount({readPreference,writePreference,onRemote:state=>{
+ saved.clear(); for(const id of state.saved) if(byId.has(id)) saved.add(id);
+ planner.replace(state.plans); renderPrograms();
+}});
+
+window.aaSavedURL=url=>saved.has(catalog.get(url)?.id);
+window.addEventListener('aa-toggle-url',event=>{const p=catalog.get(event.detail);if(p){setSaved(p.id,!saved.has(p.id));renderPrograms();window.dispatchEvent(new Event('aa-saves-rendered'));}});
+window.addEventListener('aa-local-change',()=>window.dispatchEvent(new Event('aa-saves-rendered')));
+window.dispatchEvent(new Event('aa-saves-rendered'));

@@ -11,7 +11,7 @@ export function createGlobeMarkers(container, onSelect) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'globe-marker';
-    button.tabIndex = -1;
+    button.tabIndex = 0;
     button.hidden = true;
     button.setAttribute('aria-label', 'Fly to ' + city.name);
     button.style.setProperty('--pin', city.color);

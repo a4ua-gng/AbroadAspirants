@@ -175,7 +175,9 @@ export function createCanvasGlobe(container, onSelect, motionEnabled) {
     if (selected) {
       const visiblePoints = Math.ceil(route.length * progress);
       let previous;
-      ctx.strokeStyle = selected.color;
+      const gradient = ctx.createLinearGradient(cx-radius,cy,cx+radius,cy);
+      gradient.addColorStop(0,'#79dcf1');gradient.addColorStop(.5,'#ac8afb');gradient.addColorStop(1,'#ed90c7');
+      ctx.strokeStyle = gradient;
       ctx.lineWidth = 2;
       ctx.beginPath();
       for (const point of route.slice(0, visiblePoints)) {
@@ -187,6 +189,13 @@ export function createCanvasGlobe(container, onSelect, motionEnabled) {
         previous = current;
       }
       ctx.stroke();
+      const end=project(route[Math.min(route.length-1,Math.max(1,visiblePoints-1))]);
+      const previousPoint=project(route[Math.min(route.length-2,Math.max(0,visiblePoints-2))]);
+      if(end.depth>-.03){
+        ctx.save();ctx.translate(end.x,end.y);ctx.rotate(Math.atan2(end.y-previousPoint.y,end.x-previousPoint.x)+Math.PI/2);
+        ctx.strokeStyle='#e5f3ff';ctx.lineWidth=1.4;ctx.beginPath();
+        ctx.moveTo(0,-8);ctx.lineTo(2,0);ctx.lineTo(8,4);ctx.lineTo(2,3);ctx.lineTo(1,7);ctx.lineTo(0,6);ctx.lineTo(-1,7);ctx.lineTo(-2,3);ctx.lineTo(-8,4);ctx.lineTo(-2,0);ctx.closePath();ctx.stroke();ctx.restore();
+      }
     }
 
     const view = [lat, lon, width, height, radius, selected];
