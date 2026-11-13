@@ -66,6 +66,7 @@ export async function POST(request) {
 
   const city = cityById(input.city);
   try {
+    let failureCategory = 'gateway';
     const response = streamText({
       model,
       system: [
@@ -85,12 +86,15 @@ export async function POST(request) {
         const category = /billing|credit|payment/i.test(message) ? 'billing'
           : /permission|forbidden|scope|authenticat/i.test(message) ? 'access'
           : /unavailable|temporar|timeout/i.test(message) ? 'availability' : 'gateway';
+        failureCategory = category;
         console.warn('AI Gateway stream failed',error?.name ?? 'Error',error?.statusCode ?? 'unknown status',category);
       },
     });
     const reader = response.textStream.getReader();
     const first = await reader.read();
-    if (first.done) return json('The AI advisor could not reply. Try again or use Quick guide.',502);
+    if (first.done) return json(failureCategory === 'billing'
+      ? 'The AI advisor is unavailable while the team completes AI Gateway billing setup. Quick guide is ready.'
+      : 'The AI advisor could not reply. Try again or use Quick guide.', failureCategory === 'billing' ? 503 : 502);
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       start(controller) {

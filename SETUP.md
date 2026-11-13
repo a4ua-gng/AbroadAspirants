@@ -27,3 +27,6 @@ No provided Blue Hour reference was present in the branch. Generated approach vi
 
 ## Release
 This work is for a preview only. Do not assign abroadaspirant.in, promote to production or merge into the production branch before review.
+
+## Observed model blocker
+A real request to the deployed Preview on 13 November 2026 reached AI Gateway and returned HTTP 403 in the billing category. Complete the Vercel team's AI Gateway billing/payment verification (or configure a funded AI_GATEWAY_API_KEY for Preview), redeploy, and repeat the request. This is separate from Supabase sign-in.
