@@ -60,7 +60,7 @@ function texture() {
 
 function atmosphere() {
   return new THREE.ShaderMaterial({
-    uniforms: { glow: { value: new THREE.Color('#9b89c4') } },
+    uniforms: { glow: { value: new THREE.Color('#79b9e8') } },
     vertexShader: `
       varying vec3 outward;
       varying vec3 directionToCamera;
@@ -126,8 +126,8 @@ export function createGlobe(container, onSelect, motionEnabled, canvas, context)
   const earth = new THREE.Mesh(earthGeometry, new THREE.MeshPhongMaterial({
     map: texture(),
     shininess: 16,
-    specular: new THREE.Color('#383343'),
-    emissive: new THREE.Color('#191820'),
+    specular: new THREE.Color('#284d6a'),
+    emissive: new THREE.Color('#081b30'),
     emissiveIntensity: .22,
   }));
   scene.add(earth, makeStars());
@@ -136,11 +136,11 @@ export function createGlobe(container, onSelect, motionEnabled, canvas, context)
   const key = new THREE.DirectionalLight('#eee8f3', 1.9);
   key.position.set(4, 3, -1);
   scene.add(key);
-  const rim = new THREE.DirectionalLight('#ab9ccb', .88);
+  const rim = new THREE.DirectionalLight('#8ecbff', .88);
   rim.position.set(-3, -2, 3);
   scene.add(rim);
 
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.8, .004, 8, 128), new THREE.MeshBasicMaterial({color:'#c1a7ff',transparent:true,opacity:.44}));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.8, .004, 8, 128), new THREE.MeshBasicMaterial({color:'#b5e1ff',transparent:true,opacity:.44}));
   ring.rotation.set(.92, -.38, .18);
   const crossOrbit = new THREE.Mesh(ring.geometry, new THREE.MeshBasicMaterial({color:'#7dbccf',transparent:true,opacity:.34}));
   crossOrbit.rotation.set(.85, .6, -.43);
@@ -288,8 +288,18 @@ export function createGlobe(container, onSelect, motionEnabled, canvas, context)
       }
       route = routeCurve(from, direction(city.lat, city.lon));
       line = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(route.getPoints(96)),
-        new THREE.LineBasicMaterial({color:city.color,transparent:true,opacity:.92})
+        (() => {
+          const geometry = new THREE.BufferGeometry().setFromPoints(route.getPoints(96));
+          const colors = [];
+          const start = new THREE.Color('#79dcf1'), middle = new THREE.Color('#ac8afb'), end = new THREE.Color('#ed90c7');
+          for (let i=0;i<=96;i++) {
+            const t=i/96; const color=t<.5?start.clone().lerp(middle,t*2):middle.clone().lerp(end,(t-.5)*2);
+            colors.push(color.r,color.g,color.b);
+          }
+          geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+          return geometry;
+        })(),
+        new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.95})
       );
       scene.add(line);
       plane.visible = true;

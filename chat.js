@@ -141,6 +141,7 @@ export function setupChat() {
     setBusy();
     const node = bubble('assistant','Thinking…');
     try {
+      $('#desk-status').textContent = 'Connecting to AI advisor…';
       const response = await fetch('/api/chat', {
         method:'POST',
         signal:controller.signal,
@@ -162,6 +163,7 @@ export function setupChat() {
       }
       if (!reply.trim()) throw new Error('The AI advisor returned an empty reply. Try again or use Quick guide.');
       transcript.push({role:'assistant',text:reply});
+      $('#desk-status').textContent = 'AI advisor connected · Reply received';
       linkReply(node, reply);
     } catch (error) {
       if (controller.signal.aborted) return;
@@ -170,6 +172,7 @@ export function setupChat() {
       transcript.push({role:'assistant',text,error:true});
       node.textContent = text;
       node.parentElement.classList.add('error');
+      $('#desk-status').textContent = 'AI unavailable · Quick guide is ready';
     } finally {
       if (request === controller) {
         request = undefined;

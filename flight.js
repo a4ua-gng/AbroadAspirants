@@ -47,6 +47,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     $('#city-first').textContent = city.first;
     arrival.style.setProperty('--arrival-accent', city.color);
     photo.alt = city.landmark;
+    photo.loading = 'lazy';
     photo.src = '/assets/cities/' + city.id + '.webp';
 
     const credit = $('#photo-credit');
@@ -98,7 +99,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(cities[index] === city)));
     if (markSelected) globe?.select(city);
     onCityChange(city);
-    if (markSelected && motionEnabled()) ensureFilm();
+    // Photo galleries replace the generated approach footage.
     update();
   }
 
@@ -183,7 +184,7 @@ export function setupFlight({ motionEnabled, onCityChange }) {
     photo.alt = '';
   });
   new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && motionEnabled()) ensureFilm();
+    // Media remains deferred; the photo is lazy loaded.
     if (!entry.isIntersecting && playing) stopReplay();
   }, { rootMargin:'100px' }).observe(screen);
   window.addEventListener('scroll', schedule, {passive:true});
@@ -226,6 +227,11 @@ export function setupFlight({ motionEnabled, onCityChange }) {
 
   return {
     current: () => selection,
+    choose: id => pick(id),
+    tour: id => { if (interacted) return; const city = cityById(id); if (city) setCity(city, true); },
+    manual: () => interacted,
+    takeControl: () => {interacted=true;clearTimeout(autoLanding);},
+    resume: () => { interacted = false; },
     refresh() {
       globe?.refresh();
       if (!motionEnabled() && playing) stopReplay();

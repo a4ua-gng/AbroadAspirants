@@ -107,5 +107,5 @@ export function setupPlanner({ programs, saved, readPreference, writePreference,
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   });
 
-  return { render };
+  return { render, replace(next) { for(const key of Object.keys(plans)) delete plans[key]; Object.assign(plans,next); render(); } };
 }
