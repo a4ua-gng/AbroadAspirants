@@ -1,0 +1,238 @@
+/*
+ * Abroad Aspirants | Brand-led visual refinement
+ * Layered on the Codex Himalayan Flight Journey build.
+ * Keep original photographic assets, 3D globe, galleries and functional modules.
+ */
+:root{
+  color-scheme:dark;
+  --night:#050915;
+  --surface:#0b1427;
+  --paper:#f3f7ff;
+  --muted:#a7b9d5;
+  --line:#a7bcf02c;
+  --ice:#a4d9ff;
+  --brand:linear-gradient(115deg,#c384f3 0%,#806ff3 34%,#4f8bfa 68%,#54d5ed 100%);
+  --text-gradient:linear-gradient(110deg,#ead0ff 0%,#c0a6fc 28%,#91b9ff 67%,#86e4ef 100%);
+}
+html{scroll-padding-top:105px}
+body{background:var(--night);color:var(--paper);-webkit-font-smoothing:antialiased}
+::selection{background:#6c54bc;color:#fff}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #7ddced;outline-offset:4px}
+.progress{height:3px;background:var(--brand);box-shadow:0 0 18px #776df190}
+.header{padding-top:11px;background:linear-gradient(180deg,#050915ce,transparent);backdrop-filter:none}
+.nav{
+  background:#070d1ddf;
+  border:1px solid #9bbefa3a;
+  border-radius:17px;
+  box-shadow:0 13px 52px #0206127a,inset 0 1px #ffffff15;
+  backdrop-filter:blur(24px);
+}
+.nav .wordmark{font-weight:750;letter-spacing:-.045em}
+.wordmark img{border-radius:50%;box-shadow:0 0 0 1px #d3c4ff42,0 0 17px #816ff13d}
+.nav nav a{color:#d2d9eb;transition:color .2s}
+.nav nav a:hover,.nav nav a:focus-visible{color:#a5e4f3}
+.nav-actions .account-button{border-radius:9px;background:#101d35;border-color:#9eb5e04c}
+.nav-actions .account-button:hover{background:#172e4c}
+.motion,.menu-toggle{border-radius:9px;color:#d5e4fa}
+.community-rail{color:#cad8ed}
+.community-rail .floating-join{border-radius:9px}
+.button{border-radius:10px;transition:background .22s,border-color .22s,box-shadow .22s,transform .22s}
+.button:hover{transform:translateY(-2px)}
+.button.primary,.nav .button.join-nav{
+  background:var(--brand);
+  border-color:#d3c4ff70;
+  color:#071222;
+  font-weight:750;
+  box-shadow:0 12px 35px #5662de35;
+}
+.button.primary:hover,.nav .button.join-nav:hover{
+  background:linear-gradient(112deg,#e6bafb,#aaa0fb 40%,#76b5ff 74%,#74e5ed);
+  box-shadow:0 15px 41px #6262db55;
+  color:#061221;
+}
+.button.outline{background:#091529ba;border-color:#b8c9ee4d;color:#eff7ff}
+.button.outline:hover{background:#152443;border-color:#a6aaf6bd}
+.eyebrow{color:#b9c7fc;letter-spacing:.17em}
+.signal{background:#8addeb;box-shadow:0 0 14px #7dddeb96}
+.opening{
+  background:#060d1c;
+  isolation:isolate;
+}
+.opening::before{
+  background-image:url('/assets/himalayas.jpg');
+  background-position:center 64%;
+  filter:saturate(.9) contrast(1.07) brightness(.83);
+}
+.opening::after{
+  background:
+    linear-gradient(180deg,#050a18d6 0%,#07152b71 28%,#0d193446 59%,#050915 100%),
+    linear-gradient(90deg,#050915ed 0%,#061029c7 31%,#07122b54 60%,#05091570 100%);
+}
+.opening .orbit-art{opacity:.25;filter:drop-shadow(0 0 10px #78bdff44)}
+.opening-grid{border-bottom:0;grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);gap:clamp(12px,3vw,40px)}
+.opening-grid::before{display:none}
+.opening-copy{max-width:625px}
+.opening h1{
+  color:#f3f7ff;
+  font-weight:650;
+  letter-spacing:-.083em;
+  font-size:clamp(72px,8.2vw,126px);
+  line-height:.91;
+  text-wrap:balance;
+}
+.opening h1 span{
+  -webkit-text-stroke:0;
+  color:#b4bbff;
+  background:var(--text-gradient);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:600;
+  letter-spacing:-.085em;
+  filter:drop-shadow(0 3px 27px #715bc240)
+}
+.opening-lead{color:#eef4ff!important;font-weight:620}
+.opening-description{color:#c3d0e9;line-height:1.75;max-width:460px}
+.opening .actions{margin-top:27px}
+.opening .actions .button{min-height:51px;padding-inline:20px}
+.hero-proof{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:21px;font-size:11px;color:#d0daf0;letter-spacing:.02em}
+.hero-proof span{padding:5px 9px;border:1px solid #a4bcf33c;border-radius:99px;background:#0c193285;backdrop-filter:blur(8px)}
+.flight-console{min-height:540px;background:radial-gradient(ellipse at center,#5e5bcd1d,transparent 67%);border:0}
+.flight-console::before{background:radial-gradient(circle at center,#5d68d12c,transparent 67%);filter:blur(14px);opacity:1}
+.flight-hud{color:#d4def6;border-color:#adbbf53b}
+.globe-scene{filter:drop-shadow(0 15px 34px #060a1f6b)}
+.globe-marker span{box-shadow:0 0 12px var(--pin),0 0 0 4px #a1dcff36}
+.globe-marker.active span{box-shadow:0 0 18px var(--pin),0 0 0 7px #b1d9ff43}
+.hero-footer{border-color:#a0b6eb40;color:#d0dbf3}
+.hero-footer a{color:#d8dcff}
+.destination-section{background:linear-gradient(180deg,#050915,#081124 80%);border-bottom:1px solid var(--line)}
+.city-selector-head h2{color:#f4f6ff}
+.city-search input{background:#101a31c9;border:1px solid #9bb9ef53;border-radius:10px;transition:border-color .2s,box-shadow .2s}
+.city-search input:focus{border-color:#9ca5ff;box-shadow:0 0 0 3px #7e79f32d;outline:none}
+.tour-controls button,.share-guide,.next-city{border-radius:9px;border-color:#9db7eb4f;background:#0d1a31}
+.tour-controls button:hover,.share-guide:hover,.next-city:hover{border-color:#a5d5f2;background:#172b4d}
+.city-buttons{gap:12px}
+.city-button{
+  position:relative;
+  min-height:151px;
+  border:1px solid #bbcafa42;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 12px 28px #01040c38;
+  transition:transform .25s,border-color .25s,box-shadow .25s,filter .25s;
+}
+.city-button:hover{transform:translateY(-4px);box-shadow:0 17px 33px #05081c99}
+.city-button[aria-pressed="true"]{border-color:#a8a1fa;box-shadow:0 0 0 1px #b3a6ff65,0 20px 40px #10133e8a}
+.city-button strong{font-weight:700;letter-spacing:-.035em;color:white}
+.city-button span{border-radius:5px;background:#0a102bca;color:#d5c8ff}
+.arrival-screen{border-color:var(--line);background:#080f21}
+.arrival-veil{background:linear-gradient(180deg,#04081342 0%,#0710242b 40%,#050915f5 100%),linear-gradient(90deg,#050915a3,#05091500 70%)}
+.arrival-title h2{color:#fff;text-shadow:0 15px 40px #000a}
+.arrival-top .button{backdrop-filter:blur(16px)}
+.scene-gallery{gap:15px}
+.scene-gallery figure{min-width:0;overflow:hidden}
+.scene-gallery img{border-radius:12px;filter:saturate(.93);transition:transform .6s,filter .6s}
+.scene-gallery figure:hover img{transform:scale(1.025);filter:saturate(1.04)}
+.scene-gallery figcaption{padding-top:11px;color:#aebfdd}
+.scene-gallery figcaption strong{font-weight:680}
+.section-head{border-color:var(--line)}
+.section-head h2,.mission h2{color:#f2f7ff}
+.section h2 em,.mission h2 em{
+  color:#afd4ff;
+  background:var(--text-gradient);
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.mission,.board-section,.planner-section,.desk-section,.category-section{background:#070e1e}
+.mission-links a{transition:background .23s}
+.mission-links a:hover{background:linear-gradient(140deg,#1c1a444d,#0a2b3b35)}
+.mission-links span{font-size:clamp(17px,2vw,24px)}
+.panel,.board,.planner-panel,.resource-panel,.chat{
+  background:linear-gradient(145deg,#111c33,#091429 70%);
+  border:1px solid #aebee83a;
+  border-radius:14px;
+  box-shadow:0 16px 40px #0105103a;
+}
+.city-opportunity{border-radius:12px;background:linear-gradient(142deg,#111c36,#0a162b);border-color:#abc6ef40}
+.city-opportunity:hover{border-color:#a4a2fb74}
+.city-save{border-radius:8px;border-color:#a6beea4d}
+.city-save[aria-pressed="true"]{background:#d3c2fb;color:#08152a}
+.category-photo{border-color:var(--line);border-radius:12px;overflow:hidden}
+.category-photo img{filter:saturate(.94)}
+#programs .program{background:#0c1930;border-color:#abc3ee26;transition:background .2s}
+#programs .program:hover{background:#15243c}
+.board-section .filters button{border-radius:8px;background:#0b1730;color:#d4e0f3;border-color:#a9b9e33d}
+.board-section .filters button[aria-pressed="true"],.filters button[aria-pressed="true"]{background:#c6bcff;border-color:#c6bcff;color:#071225}
+.board-section .program .save[aria-pressed="true"]{background:#bdb8ff;color:#091326}
+.board-section .program-meta{color:#b7c6ed}
+.planner-row input,.planner-row select{border-radius:7px;background:#0c1b31;border-color:#a0b8e54f}
+.chat-head{background:#0e2038;border-radius:14px 14px 0 0}
+.chat-modes button[aria-pressed="true"]{background:#d7c7ff;color:#081226}
+.chat-prompts button{border-radius:8px;background:#15253f;border-color:#a4bbee53}
+.chat-form{border-radius:11px;border-color:#b4bbfc88}
+.bubble.you{background:#242451;border-color:#7e86ed75}
+.bubble.guide{color:#d6e4fb}
+.community{background:radial-gradient(ellipse at 96% 10%,#3c2c734a,transparent 65%),linear-gradient(135deg,#121938,#091d31 88%)}
+.community-count strong{
+  color:#bdcbff;
+  background:var(--text-gradient);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.crew li{border-radius:10px;border-color:#a9bfe73a;background:#0d1a31}
+.schools.panel{background:linear-gradient(145deg,#151b38,#0b1930)}
+.faq details{border-color:var(--line)}
+.faq summary:hover{color:#b4dafa}
+.footer{background:#050915;border-color:var(--line)}
+.floating-join{background:#101e38f7!important;border:1px solid #c0b8ff9a!important;border-radius:12px;box-shadow:0 13px 40px #020717a8;z-index:45}
+dialog{background:#0d172e;border:1px solid #a6b4f281;border-radius:16px}
+.auth-form input{background:#0a1428;border-radius:9px;border-color:#a7bce84b}
+.flight-guide{color:#b4a5f7;filter:drop-shadow(0 0 8px #8c7ee588)}
+@media(max-width:1000px){
+  .opening-grid{gap:clamp(12px,2vw,24px)}
+  .opening h1{font-size:clamp(62px,7.7vw,83px)}
+  .city-button{min-height:130px}
+}
+@media(max-width:700px){
+  html{scroll-padding-top:85px}
+  .header{padding-top:7px}
+  .nav{border-radius:12px;padding-inline:9px}
+  .opening{min-height:0;padding-top:120px;padding-bottom:30px}
+  .opening::before{background-position:50% 48%;filter:saturate(.9) brightness(.8)}
+  .opening::after{background:linear-gradient(180deg,#050915d9,#061022b0 45%,#050915e8 100%),linear-gradient(90deg,#050915b5,transparent)}
+  .opening-grid{display:flex;flex-direction:column;gap:24px}
+  .opening h1{font-size:clamp(58px,13.9vw,96px);line-height:.94;margin:21px 0}
+  .opening-lead{font-size:21px!important}
+  .opening-description{max-width:490px}
+  .opening .actions .button{min-height:46px}
+  .hero-proof{gap:6px;font-size:10px}
+  .hero-proof span{padding:4px 7px}
+  .flight-console{min-height:0;margin-top:4px}
+  .globe-scene{height:clamp(285px,83vw,395px)}
+  .city-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .city-button{min-height:118px}
+  .city-button strong{font-size:21px}
+  .scene-gallery{grid-template-columns:1fr;gap:20px}
+  .scene-gallery img{height:clamp(215px,70vw,325px)}
+  .section{padding-block:58px}
+  .community{gap:25px}
+  .mission-links a{padding:16px 10px}
+  .mission-links span{font-size:16px}
+  .floating-join{right:10px;bottom:max(10px,env(safe-area-inset-bottom))}
+}
+@media(max-width:390px){
+  .nav .wordmark{font-size:12px}
+  .nav .wordmark span{max-width:90px}
+  .opening{padding-top:111px}
+  .opening h1{font-size:clamp(53px,13.5vw,70px)}
+  .opening .actions{gap:7px}
+  .opening .actions .button{padding-inline:10px;font-size:11px}
+  .flight-hud{font-size:8px}
+  .city-button strong{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+  .city-button,.scene-gallery img,.button{transition:none}
+  .city-button:hover,.scene-gallery figure:hover img,.button:hover{transform:none}
+}
