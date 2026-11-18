@@ -142,7 +142,7 @@ function renderPrograms() {
   });
   programGrid.replaceChildren();
   setText('#saved-count',saved.size);
-  setText('#program-count',matched.length+' opportunity'+(matched.length===1?'':'ies').replace('opportunityies','opportunities')+' found');
+  setText('#program-count',matched.length+' '+(matched.length===1?'opportunity':'opportunities')+' found');
   const visible=matched.slice(0,showAmount);
   if(!visible.length)programGrid.append(el('p','fineprint','No matching opportunities. Try clearing a filter or search.'));
   for(const p of visible) {
