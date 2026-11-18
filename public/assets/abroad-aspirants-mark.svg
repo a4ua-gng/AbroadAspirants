@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title desc">
+<title id="title">Abroad Aspirants</title><desc id="desc">A gradient globe with world landmarks in lavender, blue and turquoise.</desc>
+<defs>
+ <linearGradient id="main" x1="0%" y1="0%" x2="100%" y2="95%"><stop stop-color="#d46de4"/><stop offset=".32" stop-color="#8b71df"/><stop offset=".68" stop-color="#267fc6"/><stop offset="1" stop-color="#41d8cd"/></linearGradient>
+ <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d9f8cd"/><stop offset="1" stop-color="#80e3a2"/></linearGradient>
+ <linearGradient id="water" x1=".1" x2=".95" y1=".15" y2="1"><stop stop-color="#9be3fb"/><stop offset=".32" stop-color="#2799cd"/><stop offset="1" stop-color="#1948ad"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="15" stdDeviation="22" flood-color="#506cb0" flood-opacity=".19"/></filter>
+ <clipPath id="clip"><circle cx="360" cy="385" r="300"/></clipPath>
+</defs>
+<circle cx="360" cy="385" r="302" fill="url(#main)" filter="url(#shadow)"/>
+<g opacity=".9" fill="#e5f8ff" transform="translate(0 6)">
+<!-- Big Ben --> <path d="M153 188h18v-35l10-8 10 8v35h15v91h-53z"/><path d="M175 144l7-24 7 24z"/><rect x="177" y="164" width="6" height="15" rx="2" fill="#8b71df"/><rect x="174" y="195" width="15" height="15" rx="7" fill="#8b71df"/>
+<!-- Colosseum --> <path d="M213 235c3-49 76-70 107-24v74h-110z"/><g fill="#8e75cf"><rect x="229" y="234" width="14" height="26" rx="7"/><rect x="253" y="220" width="14" height="34" rx="7"/><rect x="280" y="224" width="14" height="30" rx="7"/></g>
+<!-- Eiffel --> <path d="M358 112l-8 52-35 132h20l24-83 23 83h20l-34-132z"/><path stroke="#7bbfcf" stroke-width="7" fill="none" d="M333 243h50m-43-29h37m-43-42h47m-34 90h29"/>
+<!-- Mountain --> <path d="M386 275l45-84 19 22 21-44 53 106z" fill="#e5f9ff"/><path d="M417 224l14-33 19 22 21-44 31 49-26-9-10 11-16-15-10 22-10-9z" fill="#9ee3e8"/>
+<!-- Pagoda --> <path d="M495 273v-22h56v22zM508 249v-29h30v29zM517 219v-27h13v27zM489 252h65l-17-12h-33zM500 221h48l-15-11h-20z"/>
+<!-- Spire --> <path d="M568 276h25l-7-80h-12z"/><path d="M579 196v-62" stroke="#e5f8ff" stroke-width="6"/><path d="M552 209h56l-12-10h-32z"/>
+</g>
+<g clip-path="url(#clip)">
+ <circle cx="370" cy="340" r="174" fill="url(#water)" stroke="#b4f5ff" stroke-opacity=".75" stroke-width="6"/>
+ <path d="M215 312c8-39 33-61 58-76l39-15 22 17-15 18 29 14-5 24-45 24-7 37-23 13-10-28-38-8zM351 220l37-10 21 23 47 1 4 22-18 16-39-10-18 16 25 17-9 30-35 12-14-29-30-8 14-18-15-15zM457 340l50-20 19 34-18 43-27 9-5 44-20-20-4-46-20-17zM306 384l35-21 28 16-3 43-21 20-6 37-26 14-16-39z" fill="url(#land)" opacity=".98"/>
+ <circle cx="328" cy="277" r="118" fill="url(#glow)"/>
+ <path d="M163 397c78-62 191-90 314-66 71 15 121 41 159 73" stroke="white" stroke-opacity=".85" stroke-width="10" fill="none" stroke-linecap="round"/>
+</g>
+<path d="M140 499c105 55 350 68 454-3 0 105-115 183-235 183-115 0-221-80-219-180z" fill="#12278d" opacity=".29"/>
+<g font-family="Arial,Helvetica,sans-serif" fill="#fff" text-anchor="middle" font-weight="800">
+ <text x="360" y="542" font-size="76" letter-spacing="-3">Abroad</text>
+ <text x="360" y="609" font-size="64" letter-spacing="-2.7">Aspirants</text>
+</g>
+<path d="M562 335l7 19 18 6-18 7-7 18-7-18-18-7 18-6z" fill="#fff"/>
+</svg>
